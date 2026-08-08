@@ -44,6 +44,31 @@ Recommended stack:
 
 Deployment target can be GitHub Pages or Vercel. Keep deployment decoupled from the UI.
 
+## Local development
+
+Requirements:
+
+- Node.js 24 or a compatible current LTS release
+- npm 11 or newer
+
+Install dependencies and start the local application:
+
+```sh
+npm install
+npm run dev
+```
+
+Quality and production checks:
+
+```sh
+npm run format:check
+npm run lint
+npm run typecheck
+npm run build
+```
+
+Use `npm run preview` to inspect the production build locally.
+
 ## Content hierarchy
 
 The site should remain useful even when development notes stop for months.
@@ -63,8 +88,8 @@ The site should remain useful even when development notes stop for months.
 - [`docs/DISCLOSURE_GUIDELINES.md`](docs/DISCLOSURE_GUIDELINES.md) — public/private project rules.
 - [`docs/DEVELOPMENT_ROADMAP.md`](docs/DEVELOPMENT_ROADMAP.md) — milestones and sequencing.
 - [`docs/CASE_STUDY_TEMPLATE.md`](docs/CASE_STUDY_TEMPLATE.md) — reusable project-writing template.
-- [`issues/GITHUB_ISSUES.md`](issues/GITHUB_ISSUES.md) — issue-ready implementation backlog.
-- [`CODEX_BOOTSTRAP_PROMPT.md`](CODEX_BOOTSTRAP_PROMPT.md) — initial prompt for an AI coding agent.
+- [GitHub Issues](https://github.com/bekindtomammals0/blw-portfolio/issues) — the sole implementation backlog and source of issue status and dependencies.
+- [`CODEX_BOOTSTRAP_PROMPT.md`](CODEX_BOOTSTRAP_PROMPT.md) — foundation requirements used by the initialization issue.
 
 ## Required values before public launch
 

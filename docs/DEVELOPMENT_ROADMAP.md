@@ -26,7 +26,7 @@ Deliver:
 - content model
 - disclosure rules
 - inventory
-- issue backlog
+- GitHub issue workflow
 - initial React/TypeScript/Vite/Tailwind scaffold
 - linting/formatting
 
