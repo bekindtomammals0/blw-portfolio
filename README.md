@@ -1,0 +1,86 @@
+# blw-portfolio
+
+Personal portfolio for **Brian Christopher Bulawan — AI, Automation & Systems Developer**.
+
+The portfolio presents practical systems built to make workflows more structured, adaptable, and capable of producing more predictable outcomes. It is intentionally not a repository gallery. Projects are presented as engineering case studies centered on the problem, the system designed, the engineering decisions, the outcome, and the system's evolution.
+
+## Portfolio thesis
+
+> I repeatedly encounter inefficient processes and build systems to improve them. I experiment with software, AI, and automation to solve practical problems.
+
+The public portfolio should communicate that Brian can:
+
+- identify recurring operational problems and ambiguous workflows;
+- convert them into explicit requirements and structured systems;
+- select technology based on the problem rather than force every solution into a full web application;
+- use AI-assisted engineering responsibly to accelerate implementation, debugging, testing, and iteration;
+- design systems that remain adaptable as requirements change;
+- build scoped solutions for employers or clients without overpromising beyond the defined problem.
+
+## Primary audience
+
+1. Remote employers
+2. Philippine employers
+3. Freelance clients
+4. Technical recruiters
+5. Potential business clients
+6. Developers
+7. Universities / institutions
+
+## Initial product
+
+The first release is a **single-page, content-driven portfolio** with a blog/journal feel but no requirement for continuous publishing.
+
+Recommended stack:
+
+- React
+- TypeScript
+- Vite
+- Tailwind CSS
+- Static structured project data
+- No backend
+- No authentication
+- No CMS for v1
+
+Deployment target can be GitHub Pages or Vercel. Keep deployment decoupled from the UI.
+
+## Content hierarchy
+
+The site should remain useful even when development notes stop for months.
+
+1. Permanent: identity, featured projects, stable case studies, contact.
+2. Slow-changing: project status, screenshots, architecture, current capabilities.
+3. Optional: development notes, recent experiments, next steps.
+
+## Repository documentation
+
+- [`CONTEXT.md`](CONTEXT.md) — authoritative AI-agent context.
+- [`docs/PRODUCT_SPEC.md`](docs/PRODUCT_SPEC.md) — product requirements.
+- [`docs/INFORMATION_ARCHITECTURE.md`](docs/INFORMATION_ARCHITECTURE.md) — page and navigation structure.
+- [`docs/PROJECT_CONTENT_MODEL.md`](docs/PROJECT_CONTENT_MODEL.md) — project schema and case-study format.
+- [`docs/PROJECT_INVENTORY.md`](docs/PROJECT_INVENTORY.md) — initial project discovery and inclusion gates.
+- [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) — visual and interaction principles.
+- [`docs/DISCLOSURE_GUIDELINES.md`](docs/DISCLOSURE_GUIDELINES.md) — public/private project rules.
+- [`docs/DEVELOPMENT_ROADMAP.md`](docs/DEVELOPMENT_ROADMAP.md) — milestones and sequencing.
+- [`docs/CASE_STUDY_TEMPLATE.md`](docs/CASE_STUDY_TEMPLATE.md) — reusable project-writing template.
+- [`issues/GITHUB_ISSUES.md`](issues/GITHUB_ISSUES.md) — issue-ready implementation backlog.
+- [`CODEX_BOOTSTRAP_PROMPT.md`](CODEX_BOOTSTRAP_PROMPT.md) — initial prompt for an AI coding agent.
+
+## Required values before public launch
+
+Replace these placeholders before deployment:
+
+- `TODO_EMAIL`
+- `TODO_GITHUB_URL`
+- `TODO_LINKEDIN_URL`
+- `TODO_UPWORK_URL`
+
+Public location should default to **Philippines** unless a more precise location is deliberately chosen.
+
+## Project inclusion rule
+
+A project may enter the main portfolio only when it has a **usable MVP, operational implementation, or sufficiently complete working product that demonstrates a real solution**.
+
+Concepts, planned systems, incomplete experiments, and unverified claims remain outside the main portfolio until they pass this gate.
+
+See `docs/PROJECT_INVENTORY.md` for the current candidates.
