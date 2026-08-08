@@ -8,8 +8,9 @@ You are initializing the `blw-portfolio` project.
 
 Before changing anything:
 
-1. Read `CONTEXT.md` in full.
-2. Read:
+1. Read `AGENTS.md` and `CONTEXT.md` in full.
+2. Read the assigned GitHub issue, including its labels and comments. GitHub Issues is the sole implementation backlog.
+3. Read:
    - `docs/PRODUCT_SPEC.md`
    - `docs/INFORMATION_ARCHITECTURE.md`
    - `docs/PROJECT_CONTENT_MODEL.md`
@@ -17,12 +18,11 @@ Before changing anything:
    - `docs/DISCLOSURE_GUIDELINES.md`
    - `docs/PROJECT_INVENTORY.md`
    - `docs/DEVELOPMENT_ROADMAP.md`
-   - `issues/GITHUB_ISSUES.md`
-3. Treat those files as product requirements. Do not invent missing project facts, links, metrics, deployment state, or private information.
+4. Treat those files as product requirements. Do not invent missing project facts, links, metrics, deployment state, or private information.
 
 ## Task
 
-Implement **Issue 1: Initialize the portfolio application** and the minimum architecture required for Issue 2.
+Implement [GitHub Issue #1: Initialize the portfolio application foundation](https://github.com/bekindtomammals0/blw-portfolio/issues/1) and the minimum architecture required for Issue #2.
 
 ### Stack
 
