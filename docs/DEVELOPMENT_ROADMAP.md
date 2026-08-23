@@ -65,7 +65,8 @@ Goal: present the first verified projects.
 Priority:
 1. UI GreenMetric Coordination Dashboard
 2. Badminton Tournament Operations System
-3. next verified candidate from BLWFinBot / Scheduler / Chatbot
+3. BLWFinBot verified v1
+4. B-Loom Class & Exam Scheduling System
 
 Deliver:
 - featured project cards;
@@ -75,7 +76,7 @@ Deliver:
 - GitHub/demo links only when verified.
 
 Definition of done:
-- at least 3 projects pass the portfolio gate;
+- 4 approved projects pass the portfolio gate;
 - no confidential data appears.
 
 ---

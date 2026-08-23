@@ -91,14 +91,14 @@ The site should remain useful even when development notes stop for months.
 - [GitHub Issues](https://github.com/bekindtomammals0/blw-portfolio/issues) — the sole implementation backlog and source of issue status and dependencies.
 - [`CODEX_BOOTSTRAP_PROMPT.md`](CODEX_BOOTSTRAP_PROMPT.md) — foundation requirements used by the initialization issue.
 
-## Required values before public launch
+## Public contact values
 
-Replace these placeholders before deployment:
+Approved v0.1 public contacts:
 
-- `TODO_EMAIL`
-- `TODO_GITHUB_URL`
-- `TODO_LINKEDIN_URL`
-- `TODO_UPWORK_URL`
+- Email: `brianbulawan5@gmail.com`
+- GitHub: `https://github.com/bekindtomammals0`
+- LinkedIn: `https://www.linkedin.com/in/bbulawan/`
+- Upwork: omitted unless explicitly approved later
 
 Public location should default to **Philippines** unless a more precise location is deliberately chosen.
 

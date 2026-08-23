@@ -17,10 +17,10 @@ AI agents must read this file before changing product structure, content archite
 
 In priority order:
 
-1. Email — `TODO_EMAIL`
-2. GitHub — `TODO_GITHUB_URL`
-3. LinkedIn — `TODO_LINKEDIN_URL`
-4. Upwork — `TODO_UPWORK_URL`
+1. Email — `brianbulawan5@gmail.com`
+2. GitHub — `https://github.com/bekindtomammals0`
+3. LinkedIn — `https://www.linkedin.com/in/bbulawan/`
+4. Upwork — omitted from v0.1 unless explicitly approved later
 5. Location — Philippines
 
 Do not invent missing contact information.
@@ -515,10 +515,7 @@ AI agents working in this repository must:
 
 These values are intentionally unresolved and must not be guessed:
 
-- public email;
-- GitHub profile URL;
-- LinkedIn profile URL;
-- Upwork profile URL;
+- Upwork profile URL, if it is added after v0.1;
 - final project repository URLs;
 - final screenshots;
 - final public project metrics;
