@@ -29,7 +29,7 @@ GitHub repository discovery was refreshed during the 2026-08-23 planning review.
 | UI GreenMetric Coordination Dashboard | Resume/application descriptions; operational workflow history | **Operational** — described as built and used for 2026 submission coordination | Sanitized case study | **Featured** | Create synthetic/redacted screenshots and a workflow diagram; verify any public outcome claims |
 | Badminton Tournament Operations System | Multiple tournament scheduling/registration Sheets across 2022–2024+; event-management documents | **Operational system family** | Sanitized/public case study | **Featured** | Consolidate several event tools into one case study; verify safe participant scale and individual contribution |
 | BLWFinBot | Private repository; tagged `v1.0.1` documentation baseline over the released `v1.0.0` runtime; release notes; automated test-suite verification | **Operational** — v1 was first used operationally on July 5, 2026; planned v2 capabilities are not part of the current claim | Sanitized case study | **Featured — selected AI project for v0.1** | Reconstruct evidence with synthetic finance data; omit the private repository and present v2 plans only under Evolution |
-| B-Loom Class & Exam Scheduling System | Current private repository and documented Laravel/Vue/Inertia/PostgreSQL implementation | **Paused** — the application exists and works, but development is deferred indefinitely | Sanitized case study | **Featured** | Verify the executable release baseline; create synthetic scheduling evidence; omit the private repository and distinguish current heuristics from future optimization |
+| B-Loom Class & Exam Scheduling System | Private repository verified at commit `61f54ff`; Laravel application boot and frontend production build verified | **Paused** — a demonstrable application exists, but there is no tagged release or public deployment and development is deferred indefinitely | Sanitized case study | **Featured — approved for v0.1** | Reconstruct evidence with synthetic scheduling data; omit the private repository; disclose the non-clean backend suite; present CP-SAT only as a possible future direction |
 | Enterprise Chatbot / Agent Project | Prior application history describes completed prototype | Prototype reported complete; MVP/deployment/public evidence needs verification | Public or public case study, TBD | **Featured candidate — unpromoted for v0.1** | Locate repository and current demo; document architecture and exact contribution |
 | IARO QRM Digital Logbook | Google Sheet template with operating procedure and single-entry/QRM workflow | Working structured system/template; operational adoption level needs verification | Sanitized case study | **Selected project** | Confirm real use; create synthetic demo; may be promoted if operational outcome is strong |
 | E-Buddy Personal Finance Tracker | Final project documentation and proposal materials | Completed college/group project | Public case study, subject to team contribution | **Selected project / Archive** | Document Brian's individual contribution; avoid presenting group work as solo work |
@@ -177,6 +177,92 @@ Known supporting material includes scheduling requirements and existing examinat
 - omit the private repository and institutional deployment details;
 - separate implemented conflict rules and heuristics from future CP-SAT/optimization work;
 - produce architecture and constraint-flow diagrams.
+
+### v0.1 selection and verification record
+
+B-Loom is approved as a **Featured** project for v0.1 with status `Paused` and
+disclosure level `sanitized-case-study`. The private B-Loom repository is the
+canonical application; the public `university_sched` repository is historical
+evolution and must not be presented as the current implementation.
+
+The private repository was reviewed on August 28, 2026 at untagged `main`
+commit `61f54ff` (June 28, 2026). From a clean temporary checkout, locked PHP
+and JavaScript dependencies installed, Laravel booted successfully, and the
+Vite production build completed. No GitHub Actions runs, release tags, public
+deployment, or public demo were available. The backend suite was not clean in
+the review environment: 44 tests failed, 839 emitted warnings, and 12 passed
+across 3,519 assertions on PHP 8.5 after the frontend assets were built. This
+supports a demonstrable application claim, but not a release-ready or fully
+validated deployment claim. The failing suite is a current limitation that
+must remain visible during launch review.
+
+**Verified current behavior:** B-Loom imports class and exam data, stores
+period-scoped offerings and exam schedules, supports manual review and edits,
+detects scheduling conflicts, generates exam schedules with a custom greedy
+heuristic, and exports schedule artifacts. The implemented constraint layer
+checks room capacity, student-block overlap, room overlap, instructor/proctor
+overlap, major-course room ownership, and graduate-course warnings. It also
+contains current domain handling for departmental grouping, adjacent-room
+preference, student daily load/day-density scoring, large-group GYM priority,
+combined or parallel sections, TBA assignments, inactive assignments, and
+optimistic edit locking. Some rules are hard placement blockers while others
+are scoring preferences or review advisories; public diagrams must preserve
+that distinction rather than presenting every rule as a hard constraint.
+
+**Verified optimizer boundary:** the current exam generator is application
+code, not CP-SAT. It greedily scores candidate slots and rooms, places
+departmental groups with consolidation and splintering paths, places major
+groups, and then attempts to recover unplaced groups through an orphan-shaker
+swap process. Candidate scoring considers student overload and consecutive
+exams, day density, major-course distribution, and room adjacency. CP-SAT,
+genetic algorithms, simulated annealing, and local search appear only as
+future algorithm families to evaluate; none may be claimed as implemented.
+
+**Verified architecture and technologies:** a Vue 3 and Inertia single-page
+interface calls a Laravel 13 modular monolith whose controllers delegate to
+domain services, constraint registries, and Eloquent models. PostgreSQL 16 is
+the configured persistent store, with PgBouncer and Docker Compose for the
+private LAN deployment shape. The current locked frontend uses Tailwind CSS 4,
+Vite 8, and Vitest 4. The source repository is private and there is no approved
+public demo or screenshot. Earlier Laravel 11/Tailwind descriptions are stale
+and must not be used for the current baseline.
+
+**Approved disclosure-safe evidence plan:** create a fictional university with
+synthetic departments, courses, sections, faculty, rooms, capacities, class
+times, exam periods, and enrollments. From that data, produce (1) a system
+overview diagram from import through validation, heuristic generation, human
+review, and export; (2) a constraint-flow diagram that labels hard rules versus
+preferences/advisories; (3) a reconstructed schedule-grid screenshot with at
+least one conflict and one TBA assignment; and (4) a before/after sample that
+shows an unresolved input becoming a reviewed schedule. Do not derive names,
+identifiers, values, layouts, or screenshots from institutional data. Real
+screenshots require manual approval under issue #11.
+
+**Disclosure and contribution:** publish only a sanitized case study. Omit the
+private repository URL, internal hostnames and network details, credentials,
+institutional records, real faculty/student/course/room identifiers, and actual
+schedules. All 335 commits in the reviewed repository are attributed to
+Brian's Git identity. The approved public contribution statement is that Brian
+directed the problem definition, requirements, domain and constraint modeling,
+architecture and implementation decisions, validation, debugging, and private
+deployment constraints. AI-assisted development accelerated implementation,
+debugging, documentation, and iteration; requirements, system behavior,
+constraints, validation, and final engineering decisions remained
+Brian-directed. This wording remains subject to literal factual review in
+issue #11.
+
+**Current limitations:** development is paused; the repository has no tagged
+release or CI history; the automated backend suite is not clean in the reviewed
+environment; no public demo or approved real screenshot exists; deployment is
+private and institution-specific; optimizer output remains dependent on
+heuristic ordering and weights; and future algorithm research must not be
+described as current behavior. Publish no quantitative improvement or
+conflict-free outcome claim until it has a reviewed verification source.
+
+**Claims and sources:** private commit `61f54ff`, its dependency lockfiles,
+architecture and domain documentation, optimizer and constraint source, commit
+metadata, local boot/build/test results from August 28, 2026, the owner-approved
+planning handoff on portfolio issue #6, and this repository's `CONTEXT.md`.
 
 ---
 
