@@ -1,3 +1,5 @@
+import { contact } from '../data/contact';
+
 export function AboutSection() {
   return (
     <section
@@ -13,8 +15,8 @@ export function AboutSection() {
           </h2>
           <div className="about-copy">
             <p>
-              I am Brian Christopher Bulawan, based in the Philippines, with a
-              professional focus on AI, automation, and systems development. I
+              I am Brian Christopher Bulawan, based in {contact.location}, with
+              a professional focus on AI, automation, and systems development. I
               build structured solutions for workflows that are inefficient,
               ambiguous, or difficult to manage consistently.
             </p>
