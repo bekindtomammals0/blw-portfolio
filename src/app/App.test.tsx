@@ -115,7 +115,7 @@ describe('portfolio project path', () => {
     render(<App />);
 
     const featuredWork = screen.getByRole('region', {
-      name: 'Featured work',
+      name: 'Systems built around real operational problems.',
     });
     const projectLink = within(featuredWork).getByRole('link', {
       name: 'Explore UI GreenMetric Coordination Dashboard',
@@ -169,7 +169,7 @@ describe('portfolio project path', () => {
     render(<App />);
 
     const featuredWork = screen.getByRole('region', {
-      name: 'Featured work',
+      name: 'Systems built around real operational problems.',
     });
     const projectLink = within(featuredWork).getByRole('link', {
       name: 'Explore Badminton Tournament Operations System',
@@ -207,7 +207,7 @@ describe('portfolio project path', () => {
     render(<App />);
 
     const featuredWork = screen.getByRole('region', {
-      name: 'Featured work',
+      name: 'Systems built around real operational problems.',
     });
     const projectCard = within(featuredWork).getByRole('article', {
       name: 'BLWFinBot',
@@ -248,7 +248,7 @@ describe('portfolio project path', () => {
     render(<App />);
 
     const featuredWork = screen.getByRole('region', {
-      name: 'Featured work',
+      name: 'Systems built around real operational problems.',
     });
     const projectCard = within(featuredWork).getByRole('article', {
       name: 'B-Loom Class & Exam Scheduling System',
@@ -344,5 +344,62 @@ describe('non-project visitor journey', () => {
       within(contact).queryByRole('link', { name: 'Upwork' }),
     ).not.toBeInTheDocument();
     expect(contact).not.toHaveTextContent('TODO_');
+  });
+});
+
+describe('accessible visitor journey', () => {
+  it('provides a focusable skip target and named page landmarks', () => {
+    render(<App developmentNotes={developmentNotes} />);
+
+    const skipLink = screen.getByRole('link', { name: 'Skip to content' });
+    const main = screen.getByRole('main');
+
+    expect(skipLink).toHaveAttribute('href', '#main-content');
+    expect(main).toHaveAttribute('id', 'main-content');
+    expect(main).toHaveAttribute('tabindex', '-1');
+    expect(
+      screen.getByRole('navigation', { name: 'Primary navigation' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('contentinfo')).toBeInTheDocument();
+  });
+
+  it('keeps the page heading hierarchy and project destinations explicit', () => {
+    render(<App />);
+
+    expect(
+      screen.getByRole('heading', {
+        level: 1,
+        name: 'Brian Christopher Bulawan',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', {
+        level: 2,
+        name: 'Systems built around real operational problems.',
+      }),
+    ).toBeInTheDocument();
+
+    const featuredWork = screen.getByRole('region', {
+      name: 'Systems built around real operational problems.',
+    });
+    const projectLinks = within(featuredWork).getAllByRole('link', {
+      name: /^Explore /,
+    });
+
+    for (const link of projectLinks) {
+      const destination = link.getAttribute('href');
+      expect(destination).toMatch(/^#project-/);
+      expect(document.querySelector(destination!)).toBeInTheDocument();
+    }
+  });
+
+  it('gives every published evidence figure a meaningful accessible name', () => {
+    render(<App />);
+
+    const figures = screen.getAllByRole('figure');
+    expect(figures.length).toBeGreaterThan(0);
+    for (const figure of figures) {
+      expect(figure).toHaveAccessibleName();
+    }
   });
 });

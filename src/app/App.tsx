@@ -25,7 +25,7 @@ export function App({ developmentNotes = notes }: AppProps) {
         Skip to content
       </a>
       <SiteHeader hasNotes={hasNotes} />
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         <HeroSection />
         <FeaturedWorkSection projects={projects} />
         <FoundationSection

@@ -16,7 +16,7 @@ export function FeaturedWorkSection({ projects }: FeaturedWorkSectionProps) {
     <section
       id="work"
       className="section-anchor border-t border-slate-300"
-      aria-label="Featured work"
+      aria-labelledby="work-title"
     >
       <div className="page-shell py-16 sm:py-24">
         <p className="eyebrow">Featured work</p>
