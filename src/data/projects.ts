@@ -165,4 +165,106 @@ export const projects = [
     confidentialityNote:
       'Sanitized case study. Synthetic financial data replaces personal values, messages, Ledger rows, goals, and receipts; credentials, contract rates, internal deployment details, and the private repository are excluded.',
   },
+  {
+    slug: 'b-loom',
+    name: 'B-Loom Class & Exam Scheduling System',
+    tagline:
+      'A constraint-aware application for importing academic data, generating exam schedules, reviewing conflicts, and exporting schedule artifacts.',
+    status: 'Paused',
+    disclosure: 'sanitized-case-study',
+    featured: true,
+    categories: ['Scheduling', 'Web Applications'],
+    technologies: [
+      'Laravel 13',
+      'Vue 3',
+      'Inertia',
+      'PostgreSQL 16',
+      'PgBouncer',
+      'Docker Compose',
+      'Tailwind CSS 4',
+      'Vite 8',
+      'Vitest 4',
+    ],
+    problem:
+      'Class and examination scheduling must reconcile limited rooms and periods with overlapping student blocks, instructors, proctors, course groups, and institution-specific review rules. The work needed one system that could make those constraints visible while preserving human control over unresolved or exceptional assignments.',
+    system:
+      'B-Loom imports class and exam data into period-scoped offerings and schedules, detects conflicts, generates exam assignments with a custom greedy heuristic, supports manual review and edits, and exports schedule artifacts. Its generator scores candidate periods and rooms, places departmental and major groups, and uses an orphan-shaker swap process to attempt recovery of groups that remain unplaced.',
+    engineering:
+      'A Vue 3 and Inertia interface sits over a Laravel 13 modular monolith backed by PostgreSQL 16. Controllers delegate to domain services, constraint registries, and Eloquent models. Implemented hard placement blockers cover room capacity plus student-block, room, and instructor or proctor overlaps. Other rules—including grouping, adjacent rooms, student daily load, day density, large-group GYM priority, major-room ownership, and graduate-course checks—act as scoring preferences or review advisories where appropriate.',
+    outcome:
+      'The demonstrable application brings import, constraint checking, heuristic generation, manual review, editing, and export into one scheduling workflow. It is not presented as release-ready or proven conflict-free: the reviewed backend suite is not clean, there is no tagged release or public deployment, and optimizer output remains sensitive to heuristic ordering and weights.',
+    evolution:
+      'B-Loom is the canonical scheduling application; the earlier university_sched repository is historical evolution rather than the current implementation. Development is paused indefinitely. CP-SAT, genetic algorithms, simulated annealing, and local search are future algorithm families to evaluate, not implemented behavior.',
+    evidence: [
+      {
+        type: 'workflow',
+        alt: 'Synthetic scheduling data flows from import through validation, heuristic generation, human review, and export.',
+        caption:
+          'Synthetic system overview — entirely synthetic academic entities illustrate the verified workflow without institutional records.',
+        steps: [
+          'Data import',
+          'Constraint validation',
+          'Greedy generation',
+          'Human review',
+          'Schedule export',
+        ],
+      },
+      {
+        type: 'workflow',
+        alt: 'Constraint flow distinguishes hard placement blockers from scoring preferences and review advisories.',
+        caption:
+          'Synthetic constraint flow — rule classes are separated so preferences and advisories are not presented as hard constraints.',
+        steps: [
+          'Candidate assignment',
+          'Hard blockers',
+          'Scoring preferences',
+          'Review advisories',
+          'Human decision',
+        ],
+      },
+      {
+        type: 'workflow',
+        alt: 'Synthetic architecture diagram connects the Vue and Inertia interface to Laravel domain services, constraint registries, and PostgreSQL.',
+        caption:
+          'Architecture overview — verified application layers shown without private deployment or network details.',
+        steps: [
+          'Vue 3 interface',
+          'Inertia',
+          'Laravel 13',
+          'Domain services and constraints',
+          'PostgreSQL 16',
+        ],
+      },
+      {
+        type: 'sample-output',
+        alt: 'Synthetic schedule review sample with one assigned exam, one conflict, and one TBA room.',
+        caption:
+          'Reconstructed schedule grid — fictional courses, periods, and rooms; no real scheduling or institutional data.',
+        sampleRows: [
+          { label: 'SYN-201 · Period A', value: 'Room North-12' },
+          { label: 'SYN-305 · Period A', value: 'Block overlap · Review' },
+          { label: 'SYN-410 · Period B', value: 'Room TBA' },
+        ],
+      },
+      {
+        type: 'sample-output',
+        alt: 'Synthetic before and after review sample showing an unresolved assignment becoming a reviewed schedule.',
+        caption:
+          'Before and after review — a fictional unresolved input is updated through human review, not an optimizer guarantee.',
+        sampleRows: [
+          { label: 'Before · SYN-410', value: 'Period B · Room TBA' },
+          {
+            label: 'After human review · SYN-410',
+            value: 'Period C · Room South-04',
+          },
+        ],
+      },
+    ],
+    links: [],
+    developmentNotes: [],
+    contribution:
+      'Brian directed the problem definition, requirements, domain and constraint modeling, architecture and implementation decisions, validation, debugging, and private deployment constraints. AI-assisted development accelerated implementation, debugging, documentation, and iteration; requirements, system behavior, constraints, validation, and final engineering decisions remained Brian-directed.',
+    confidentialityNote:
+      'Sanitized case study. Evidence uses an entirely synthetic university, departments, courses, faculty, rooms, capacities, periods, enrollments, conflicts, and assignments. Institutional records, actual schedules, credentials, internal network details, screenshots, and the private repository are excluded.',
+  },
 ] satisfies PortfolioProject[];

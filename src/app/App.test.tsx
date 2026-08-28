@@ -141,6 +141,64 @@ describe('portfolio project path', () => {
     ).toHaveTextContent('Project payment');
     expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
   });
+
+  it('publishes B-Loom as a paused sanitized scheduling system with future optimization separated', () => {
+    render(<App />);
+
+    const featuredWork = screen.getByRole('region', {
+      name: 'Featured work',
+    });
+    const projectCard = within(featuredWork).getByRole('article', {
+      name: 'B-Loom Class & Exam Scheduling System',
+    });
+    const projectLink = within(projectCard).getByRole('link', {
+      name: 'Explore B-Loom Class & Exam Scheduling System',
+    });
+
+    expect(within(projectCard).getByText('Paused')).toBeInTheDocument();
+    expect(projectLink).toHaveAttribute('href', '#project-b-loom');
+
+    const caseStudy = screen.getByRole('article', {
+      name: 'B-Loom Class & Exam Scheduling System case study',
+    });
+
+    expect(caseStudy).toHaveAttribute('id', 'project-b-loom');
+    expect(caseStudy).toHaveTextContent('Sanitized case study');
+    expect(caseStudy).toHaveTextContent(/custom greedy heuristic/i);
+    expect(caseStudy).toHaveTextContent(/hard placement blockers/i);
+    expect(caseStudy).toHaveTextContent(/preferences or review advisories/i);
+    expect(caseStudy).toHaveTextContent(/backend suite is not clean/i);
+    expect(caseStudy).toHaveTextContent(/CP-SAT.*future/i);
+    expect(caseStudy).toHaveTextContent(/Brian directed/i);
+    expect(caseStudy).toHaveTextContent(/AI-assisted development/i);
+    expect(caseStudy).toHaveTextContent(/entirely synthetic/i);
+    expect(
+      within(caseStudy).getByRole('figure', {
+        name: /synthetic scheduling data flows from import/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(caseStudy).getByRole('figure', {
+        name: /hard placement blockers from scoring preferences/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(caseStudy).getByRole('figure', {
+        name: /architecture diagram connects the Vue and Inertia interface/i,
+      }),
+    ).toBeInTheDocument();
+    expect(
+      within(caseStudy).getByRole('figure', {
+        name: /schedule review sample with one assigned exam/i,
+      }),
+    ).toHaveTextContent('Room TBA');
+    expect(
+      within(caseStudy).getByRole('figure', {
+        name: /before and after review sample/i,
+      }),
+    ).toHaveTextContent('After human review');
+    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
+  });
 });
 
 describe('non-project visitor journey', () => {
