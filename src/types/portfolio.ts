@@ -38,6 +38,7 @@ export interface ProjectEvidence {
 
 export interface DevelopmentNote {
   date: string;
+  projectSlug: string;
   type: 'Build' | 'Iteration' | 'Experiment' | 'Reflection';
   text: string;
 }

@@ -460,6 +460,45 @@ a {
   list-style: none;
 }
 
+.notes-grid {
+  display: grid;
+  gap: 1px;
+  margin: 2.5rem 0 0;
+  padding: 1px;
+  background: var(--color-border);
+  list-style: none;
+}
+
+.development-note {
+  height: 100%;
+  background: var(--color-surface);
+  padding: 1.5rem;
+}
+
+.note-metadata {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  color: #713f12;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.note-project {
+  margin: 1.25rem 0 0;
+  font-weight: 800;
+}
+
+.note-text {
+  margin: 0.75rem 0 0;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
 @media (min-width: 48rem) {
   .approach-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -479,6 +518,10 @@ a {
 
   .case-study-header {
     grid-template-columns: minmax(0, 1.5fr) minmax(14rem, 0.5fr);
+  }
+
+  .notes-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .project-case-study > .evidence-panel {

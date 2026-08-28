@@ -5,8 +5,80 @@ import { cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { App } from './App';
+import type { DevelopmentNote } from '../types/portfolio';
 
 afterEach(cleanup);
+
+const developmentNotes = [
+  {
+    date: '2026-08-27',
+    projectSlug: 'b-loom',
+    type: 'Iteration',
+    text: 'Separated hard placement blockers from scoring preferences after reviewing the scheduling model.',
+  },
+  {
+    date: '2026-08-26',
+    projectSlug: 'missing-project',
+    type: 'Reflection',
+    text: 'Recorded what the experiment clarified before deciding whether to continue it.',
+  },
+] satisfies DevelopmentNote[];
+
+describe('optional development notes', () => {
+  it('omits the section and navigation affordance when no notes exist', () => {
+    render(<App />);
+
+    expect(
+      screen.queryByRole('region', { name: 'Development notes' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Notes' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders typed notes and links valid project references', () => {
+    render(<App developmentNotes={developmentNotes} />);
+
+    const notes = screen.getByRole('region', { name: 'Development notes' });
+    expect(within(notes).getByText('August 27, 2026')).toBeInTheDocument();
+    expect(within(notes).getByText('Iteration')).toBeInTheDocument();
+    expect(
+      within(notes).getByText(/Separated hard placement blockers/),
+    ).toBeInTheDocument();
+    expect(
+      within(notes).getByRole('link', {
+        name: 'B-Loom Class & Exam Scheduling System',
+      }),
+    ).toHaveAttribute('href', '#project-b-loom');
+    expect(screen.getByRole('link', { name: 'Notes' })).toHaveAttribute(
+      'href',
+      '#notes',
+    );
+  });
+
+  it('shows an invalid project reference as text instead of a broken link', () => {
+    render(<App developmentNotes={developmentNotes} />);
+
+    const note = screen.getByRole('article', {
+      name: 'Reflection note for missing-project',
+    });
+    expect(within(note).getByText('missing-project')).toBeInTheDocument();
+    expect(within(note).queryByRole('link')).not.toBeInTheDocument();
+  });
+
+  it('keeps note navigation keyboard-operable at a narrow viewport', () => {
+    window.innerWidth = 320;
+    render(<App developmentNotes={developmentNotes} />);
+
+    const projectLink = screen.getByRole('link', {
+      name: 'B-Loom Class & Exam Scheduling System',
+    });
+    projectLink.focus();
+
+    expect(projectLink).toHaveFocus();
+    expect(projectLink).toHaveAttribute('href', '#project-b-loom');
+  });
+});
 
 describe('portfolio project path', () => {
   it('renders a featured project card linked to its five-part case study', () => {

@@ -1,6 +1,7 @@
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
 import { projects } from '../data/projects';
+import { notes } from '../data/notes';
 import { AboutSection } from '../sections/AboutSection';
 import { ApproachSection } from '../sections/ApproachSection';
 import { CaseStudiesSection } from '../sections/CaseStudiesSection';
@@ -8,14 +9,22 @@ import { ContactSection } from '../sections/ContactSection';
 import { FeaturedWorkSection } from '../sections/FeaturedWorkSection';
 import { FoundationSection } from '../sections/FoundationSection';
 import { HeroSection } from '../sections/HeroSection';
+import { NotesSection } from '../sections/NotesSection';
+import type { DevelopmentNote } from '../types/portfolio';
 
-export function App() {
+interface AppProps {
+  developmentNotes?: DevelopmentNote[];
+}
+
+export function App({ developmentNotes = notes }: AppProps) {
+  const hasNotes = developmentNotes.length > 0;
+
   return (
     <div id="top" className="min-h-screen bg-stone-50 text-slate-950">
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <SiteHeader />
+      <SiteHeader hasNotes={hasNotes} />
       <main id="main-content">
         <HeroSection />
         <FeaturedWorkSection projects={projects} />
@@ -26,12 +35,7 @@ export function App() {
           description="No non-featured projects are published yet. Each project must reach a working state and pass factual, contribution, evidence, and disclosure review before it enters this collection."
         />
         <CaseStudiesSection projects={projects} />
-        <FoundationSection
-          id="notes"
-          eyebrow="Development notes"
-          title="Optional by design."
-          description="The notes data source is empty. Later work can add verified Build, Iteration, Experiment, or Reflection entries without making the portfolio depend on frequent publishing."
-        />
+        <NotesSection notes={developmentNotes} projects={projects} />
         <ApproachSection />
         <AboutSection />
         <ContactSection />
