@@ -1,6 +1,10 @@
 @import 'tailwindcss';
 
 :root {
+  --color-surface: #fff;
+  --color-text-secondary: #475569;
+  --color-border: #cbd5e1;
+
   font-family:
     Inter,
     ui-sans-serif,
@@ -325,13 +329,13 @@ a {
   display: grid;
   gap: 1px;
   margin: 0;
-  background: #cbd5e1;
+  background: var(--color-border);
 }
 
 .sample-output div {
   display: grid;
   gap: 0.35rem;
-  background: #fff;
+  background: var(--color-surface);
   padding: 1rem;
 }
 
@@ -341,7 +345,7 @@ a {
 
 .sample-output dd {
   margin: 0;
-  color: #475569;
+  color: var(--color-text-secondary);
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
