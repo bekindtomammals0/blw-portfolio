@@ -29,6 +29,7 @@ export interface ProjectEvidence {
   src?: string;
   alt?: string;
   caption?: string;
+  steps?: string[];
 }
 
 export interface DevelopmentNote {

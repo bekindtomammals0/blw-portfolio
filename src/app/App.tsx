@@ -1,5 +1,8 @@
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
+import { projects } from '../data/projects';
+import { CaseStudiesSection } from '../sections/CaseStudiesSection';
+import { FeaturedWorkSection } from '../sections/FeaturedWorkSection';
 import { FoundationSection } from '../sections/FoundationSection';
 import { HeroSection } from '../sections/HeroSection';
 
@@ -12,28 +15,14 @@ export function App() {
       <SiteHeader />
       <main id="main-content">
         <HeroSection />
-        <FoundationSection
-          id="work"
-          eyebrow="Work"
-          title="Project evidence, structured before it is presented."
-          description="The project system is ready for verified case studies. Public work will appear only after its claims, links, and disclosure level pass review."
-          links={[
-            { label: 'Selected projects scaffold', href: '#projects' },
-            { label: 'Case-study scaffold', href: '#case-studies' },
-          ]}
-        />
+        <FeaturedWorkSection projects={projects} />
         <FoundationSection
           id="projects"
           eyebrow="Selected projects"
-          title="No unverified projects are rendered."
-          description="The typed project collection is intentionally empty during initialization. Issue #2 will add the first inventory-grounded project through the reusable content path."
+          title="Additional work stays evidence-gated."
+          description="No non-featured projects are published yet. Each project must reach a working state and pass factual, contribution, evidence, and disclosure review before it enters this collection."
         />
-        <FoundationSection
-          id="case-studies"
-          eyebrow="Case studies"
-          title="Problem → System → Engineering → Outcome → Evolution"
-          description="Every featured project will use this shared five-part structure. The foundation does not fabricate unfinished case-study content."
-        />
+        <CaseStudiesSection projects={projects} />
         <FoundationSection
           id="notes"
           eyebrow="Development notes"
