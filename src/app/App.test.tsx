@@ -16,7 +16,10 @@ describe('portfolio project path', () => {
       name: 'Featured work',
     });
     const projectLink = within(featuredWork).getByRole('link', {
-      name: 'Explore system',
+      name: 'Explore UI GreenMetric Coordination Dashboard',
+    });
+    const projectCard = within(featuredWork).getByRole('article', {
+      name: 'UI GreenMetric Coordination Dashboard',
     });
 
     expect(
@@ -24,9 +27,9 @@ describe('portfolio project path', () => {
         name: 'UI GreenMetric Coordination Dashboard',
       }),
     ).toBeInTheDocument();
-    expect(within(featuredWork).getByText('Operational')).toBeInTheDocument();
+    expect(within(projectCard).getByText('Operational')).toBeInTheDocument();
     expect(
-      within(featuredWork).getByText('Data / Workflow'),
+      within(projectCard).getByText('Data / Workflow'),
     ).toBeInTheDocument();
     expect(projectLink).toHaveAttribute('href', '#project-ui-greenmetric');
 
@@ -58,6 +61,41 @@ describe('portfolio project path', () => {
         within(caseStudy).getByRole('heading', { name: sectionName }),
       ).toBeInTheDocument();
     }
+  });
+
+  it('presents tournament tools as one sanitized operational system family', () => {
+    render(<App />);
+
+    const featuredWork = screen.getByRole('region', {
+      name: 'Featured work',
+    });
+    const projectLink = within(featuredWork).getByRole('link', {
+      name: 'Explore Badminton Tournament Operations System',
+    });
+
+    expect(projectLink).toHaveAttribute(
+      'href',
+      '#project-badminton-tournament-operations',
+    );
+
+    const caseStudy = screen.getByRole('article', {
+      name: 'Badminton Tournament Operations System case study',
+    });
+
+    expect(caseStudy).toHaveTextContent('Operational');
+    expect(caseStudy).toHaveTextContent('Sanitized case study');
+    expect(caseStudy).toHaveTextContent(/multiple events/i);
+    expect(caseStudy).toHaveTextContent(/synthetic participant records/i);
+    expect(caseStudy).toHaveTextContent(/registration/i);
+    expect(caseStudy).toHaveTextContent(/scheduling/i);
+    expect(caseStudy).toHaveTextContent(/match progression/i);
+    expect(caseStudy).toHaveTextContent(/event-day coordination/i);
+    expect(
+      within(caseStudy).getByRole('figure', {
+        name: /registration records flow into scheduling/i,
+      }),
+    ).toBeInTheDocument();
+    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
   });
 });
 
