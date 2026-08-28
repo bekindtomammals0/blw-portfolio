@@ -61,6 +61,16 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
         <p className="disclosure-note">{project.confidentialityNote}</p>
       ) : null}
 
+      {project.contribution ? (
+        <section
+          className="contribution-note"
+          aria-labelledby={`${project.slug}-contribution`}
+        >
+          <h4 id={`${project.slug}-contribution`}>Contribution</h4>
+          <p>{project.contribution}</p>
+        </section>
+      ) : null}
+
       {project.evidence.map((evidence, index) => (
         <ProjectEvidence
           evidence={evidence}

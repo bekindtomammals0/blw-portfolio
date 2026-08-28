@@ -83,6 +83,8 @@ export const projects = [
     ],
     links: [],
     developmentNotes: [],
+    contribution:
+      'Brian structured the tournament lifecycle across the related event tools and adapted their operational views as event needs changed.',
     confidentialityNote:
       'Sanitized case study. Synthetic participant records replace names and contact details; production spreadsheets, links, and event records are excluded.',
   },

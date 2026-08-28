@@ -380,6 +380,22 @@ a {
   line-height: 1.6;
 }
 
+.contribution-note {
+  margin: 2rem 0;
+  max-width: 48rem;
+}
+
+.contribution-note h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.contribution-note p {
+  margin: 0.6rem 0 0;
+  color: #475569;
+  line-height: 1.7;
+}
+
 .case-study-grid {
   display: grid;
   gap: 0;

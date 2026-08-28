@@ -90,6 +90,9 @@ describe('portfolio project path', () => {
     expect(caseStudy).toHaveTextContent(/scheduling/i);
     expect(caseStudy).toHaveTextContent(/match progression/i);
     expect(caseStudy).toHaveTextContent(/event-day coordination/i);
+    expect(caseStudy).toHaveTextContent(
+      /Brian structured the tournament lifecycle/i,
+    );
     expect(
       within(caseStudy).getByRole('figure', {
         name: /registration records flow into scheduling/i,
