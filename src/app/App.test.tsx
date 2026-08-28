@@ -100,6 +100,41 @@ describe('portfolio project path', () => {
     ).toBeInTheDocument();
     expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
   });
+
+  it('publishes verified BLWFinBot v1 without presenting planned v2 work as current', () => {
+    render(<App />);
+
+    const featuredWork = screen.getByRole('region', {
+      name: 'Featured work',
+    });
+    const projectCard = within(featuredWork).getByRole('article', {
+      name: 'BLWFinBot',
+    });
+    const projectLink = within(projectCard).getByRole('link', {
+      name: 'Explore BLWFinBot',
+    });
+
+    expect(within(projectCard).getByText('Operational')).toBeInTheDocument();
+    expect(projectLink).toHaveAttribute('href', '#project-blwfinbot');
+
+    const caseStudy = screen.getByRole('article', {
+      name: 'BLWFinBot case study',
+    });
+
+    expect(caseStudy).toHaveTextContent('Sanitized case study');
+    expect(caseStudy).toHaveTextContent(/text (?:or|and) voice/i);
+    expect(caseStudy).toHaveTextContent(/goal-feasibility/i);
+    expect(caseStudy).toHaveTextContent(/planned v2/i);
+    expect(caseStudy).toHaveTextContent(/human-directed/i);
+    expect(caseStudy).toHaveTextContent(/AI-assisted development/i);
+    expect(caseStudy).toHaveTextContent(/synthetic financial data/i);
+    expect(
+      within(caseStudy).getByRole('figure', {
+        name: /Telegram message flows through deterministic parsing/i,
+      }),
+    ).toBeInTheDocument();
+    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
+  });
 });
 
 describe('non-project visitor journey', () => {
