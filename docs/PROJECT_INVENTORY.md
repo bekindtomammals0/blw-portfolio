@@ -28,9 +28,9 @@ GitHub repository discovery was refreshed during the 2026-08-23 planning review.
 |---|---|---|---|---|---|
 | UI GreenMetric Coordination Dashboard | Resume/application descriptions; operational workflow history | **Operational** — described as built and used for 2026 submission coordination | Sanitized case study | **Featured** | Create synthetic/redacted screenshots and a workflow diagram; verify any public outcome claims |
 | Badminton Tournament Operations System | Multiple tournament scheduling/registration Sheets across 2022–2024+; event-management documents | **Operational system family** | Sanitized/public case study | **Featured** | Consolidate several event tools into one case study; verify safe participant scale and individual contribution |
-| BLWFinBot | Private repository, documentation, version tags, and locally verified test suite | **Working MVP** — v1 is executable; planned v2 capabilities are not part of the current claim | Sanitized case study | **Featured** | Reconstruct evidence with synthetic finance data; omit the private repository and present v2 plans only under Evolution |
+| BLWFinBot | Private repository; tagged `v1.0.1` documentation baseline over the released `v1.0.0` runtime; release notes; automated test-suite verification | **Operational** — v1 was first used operationally on July 5, 2026; planned v2 capabilities are not part of the current claim | Sanitized case study | **Featured — selected AI project for v0.1** | Reconstruct evidence with synthetic finance data; omit the private repository and present v2 plans only under Evolution |
 | B-Loom Class & Exam Scheduling System | Current private repository and documented Laravel/Vue/Inertia/PostgreSQL implementation | **Paused** — the application exists and works, but development is deferred indefinitely | Sanitized case study | **Featured** | Verify the executable release baseline; create synthetic scheduling evidence; omit the private repository and distinguish current heuristics from future optimization |
-| Enterprise Chatbot / Agent Project | Prior application history describes completed prototype | Prototype reported complete; MVP/deployment/public evidence needs verification | Public or public case study, TBD | **Featured candidate** | Locate repository and current demo; document architecture and exact contribution |
+| Enterprise Chatbot / Agent Project | Prior application history describes completed prototype | Prototype reported complete; MVP/deployment/public evidence needs verification | Public or public case study, TBD | **Featured candidate — unpromoted for v0.1** | Locate repository and current demo; document architecture and exact contribution |
 | IARO QRM Digital Logbook | Google Sheet template with operating procedure and single-entry/QRM workflow | Working structured system/template; operational adoption level needs verification | Sanitized case study | **Selected project** | Confirm real use; create synthetic demo; may be promoted if operational outcome is strong |
 | E-Buddy Personal Finance Tracker | Final project documentation and proposal materials | Completed college/group project | Public case study, subject to team contribution | **Selected project / Archive** | Document Brian's individual contribution; avoid presenting group work as solo work |
 | Badminton Training / Team Operations Sheets | EVRAA 2025 training workbook and related sports sheets | Working operational/support tools | Sanitized case study | **Selected project** | Decide whether to merge into broader Sports Operations case study |
@@ -97,6 +97,70 @@ A personal finance system that records income/expenses and supports goal-feasibi
 - omit the private repository;
 - describe AI assistance without displacing Brian's requirements, validation, and engineering decisions;
 - present planned v2 work only as Evolution.
+
+### v0.1 selection and verification record
+
+BLWFinBot is the selected AI project for v0.1. The Enterprise Chatbot / Agent
+remains an unpromoted candidate until its repository, demo, architecture, and
+contribution evidence pass the same gate.
+
+The private BLWFinBot repository was reviewed on August 28, 2026. The latest
+tag, `v1.0.1` (`9eb53d9`), is a documentation-only correction over the released
+`v1.0.0` runtime (`ef1f587`; code baseline `d94c792`). Its release record states
+that the bot was first used operationally on July 5, 2026 and that the clean
+automated suite passed before release. That evidence satisfies the inclusion
+gate without making the repository public.
+
+**Verified v1 capabilities:**
+
+- Telegram text and voice capture for one Income or Expense per message;
+- deterministic parsing, correction, and deletion;
+- ordered rule-based categorization with clustering used only to discover
+  recurring Uncategorized descriptions;
+- contract-based Income projection and persisted Goal-feasibility checks;
+- scheduled Goal-drift alerts and read-only email-receipt import;
+- a Google Sheets Ledger behind a shared storage interface with an implemented
+  SQLAlchemy/PostgreSQL-capable alternative;
+- Manila-time date handling and always-on VM deployment support.
+
+The Sheets-to-PostgreSQL production cutover is not verified. Financial
+Accounts, Transfers, liabilities, balance reconciliation, a structured
+analytics Dashboard, portfolio-aware Goals, and the other documented v2 work
+are planned or incomplete and must appear only under Evolution.
+
+**Verified architecture and technologies:** Python; `pyTelegramBotAPI` long
+polling; deterministic regex/rule parsing; `gspread` with Google Sheets;
+SQLAlchemy with PostgreSQL capability; `faster-whisper` or usage-capped Azure
+Speech for transcription; scikit-learn TF-IDF/K-Means for rule discovery;
+APScheduler; `zoneinfo`; and optional read-only IMAP receipt ingestion. The
+repository is private. No public demo or approved real screenshot exists.
+
+**Disclosure and reconstructable evidence:** publish only a sanitized case
+study. Omit the repository URL, credentials, internal deployment details,
+contract rate, personal financial values, raw messages, ledger rows, and real
+email receipts. Safe evidence can be reconstructed with synthetic transactions
+as a Telegram-to-parser-to-categorizer-to-Ledger workflow, sample receipts, a
+synthetic Ledger, and a Goal-feasibility example. Real screenshots require
+manual approval.
+
+**Contribution and AI-assisted development:** GitHub attributes all 32
+repository contributions visible at review time to Brian's account. The
+owner-approved planning handoff and the portfolio's AI-assistance policy support
+the public statement that Brian directed the problem definition, requirements,
+architecture and implementation decisions, validation, debugging, release
+baseline, and deployment constraints. AI-assisted development accelerated
+implementation, debugging, documentation, and iteration; requirements, system
+behavior, constraints, validation, and final engineering decisions remained
+Brian-directed. This wording remains subject to the literal factual review
+required by launch issue #11.
+
+**Claims and sources:** the private `v1.0.0` and `v1.0.1` release notes support
+the dates, runtime scope, known limitations, and clean-suite claim; the tagged
+source and dependency manifest support architecture and technology claims;
+GitHub contributor and commit metadata support the repository-contribution
+claim; and the owner-approved planning handoff plus `CONTEXT.md` support the
+AI-assistance wording. Publish no quantitative outcome or performance metric in
+v0.1: none has an approved verification source.
 
 ---
 
