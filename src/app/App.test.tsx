@@ -124,6 +124,7 @@ describe('portfolio project path', () => {
     expect(caseStudy).toHaveTextContent('Sanitized case study');
     expect(caseStudy).toHaveTextContent(/text (?:or|and) voice/i);
     expect(caseStudy).toHaveTextContent(/goal-feasibility/i);
+    expect(caseStudy).toHaveTextContent(/always-on VM/i);
     expect(caseStudy).toHaveTextContent(/planned v2/i);
     expect(caseStudy).toHaveTextContent(/human-directed/i);
     expect(caseStudy).toHaveTextContent(/AI-assisted development/i);
@@ -133,6 +134,11 @@ describe('portfolio project path', () => {
         name: /Telegram message flows through deterministic parsing/i,
       }),
     ).toBeInTheDocument();
+    expect(
+      within(caseStudy).getByRole('figure', {
+        name: /synthetic Ledger sample/i,
+      }),
+    ).toHaveTextContent('Project payment');
     expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
   });
 });

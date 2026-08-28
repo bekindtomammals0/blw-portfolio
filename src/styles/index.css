@@ -321,6 +321,30 @@ a {
   padding: 0.9rem 1rem;
 }
 
+.sample-output {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  background: #cbd5e1;
+}
+
+.sample-output div {
+  display: grid;
+  gap: 0.35rem;
+  background: #fff;
+  padding: 1rem;
+}
+
+.sample-output dt {
+  font-weight: 800;
+}
+
+.sample-output dd {
+  margin: 0;
+  color: #475569;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
 .workflow-step span,
 .project-metadata dt,
 .case-study-number {

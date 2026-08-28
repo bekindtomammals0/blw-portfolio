@@ -111,7 +111,7 @@ export const projects = [
     system:
       'Verified v1 accepts one Income or Expense per Telegram text or voice message, then parses, categorizes, and stores the record in a Ledger. It supports correction and deletion, contract-based Income projection, persisted Goal-feasibility checks, scheduled Goal-drift alerts, and optional read-only receipt import. Manila-time handling keeps dated behavior aligned with the user’s operating context.',
     engineering:
-      'Python services separate Telegram interaction, deterministic parsing and ordered categorization rules, speech transcription, scheduling, and storage. Google Sheets is the verified operational Ledger behind a shared storage interface; a SQLAlchemy/PostgreSQL-capable implementation also exists, but a production cutover is not claimed. TF-IDF and K-Means discover recurring Uncategorized descriptions for rule improvement rather than deciding transaction categories at runtime.',
+      'Python services separate Telegram interaction, deterministic parsing and ordered categorization rules, speech transcription, scheduling, and storage, with support for an always-on VM deployment. Google Sheets is the verified operational Ledger behind a shared storage interface; a SQLAlchemy/PostgreSQL-capable implementation also exists, but a production cutover is not claimed. TF-IDF and K-Means discover recurring Uncategorized descriptions for rule improvement rather than deciding transaction categories at runtime.',
     outcome:
       'The operational v1 system made transaction capture, correction, categorization, and goal checks available through one conversational workflow. No quantitative time-saving, accuracy, or financial-outcome claim is made because none has an approved verification source.',
     evolution:
@@ -139,6 +139,22 @@ export const projects = [
           'Income projection',
           'Goal feasibility',
           'Drift alert',
+        ],
+      },
+      {
+        type: 'sample-output',
+        alt: 'Synthetic Ledger sample with one Income and one Expense record.',
+        caption:
+          'Synthetic Ledger rows — illustrative values and descriptions, not personal financial records.',
+        sampleRows: [
+          {
+            label: 'Income · Project payment',
+            value: 'PHP 1,200',
+          },
+          {
+            label: 'Expense · Transport',
+            value: 'PHP 180',
+          },
         ],
       },
     ],

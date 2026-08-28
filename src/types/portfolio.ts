@@ -30,6 +30,10 @@ export interface ProjectEvidence {
   alt?: string;
   caption?: string;
   steps?: string[];
+  sampleRows?: Array<{
+    label: string;
+    value: string;
+  }>;
 }
 
 export interface DevelopmentNote {

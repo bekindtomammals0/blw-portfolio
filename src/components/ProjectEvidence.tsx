@@ -21,6 +21,22 @@ export function ProjectEvidence({ evidence }: ProjectEvidenceProps) {
     );
   }
 
+  if (evidence.type === 'sample-output' && evidence.sampleRows?.length) {
+    return (
+      <figure className="evidence-panel" aria-label={evidence.alt}>
+        <dl className="sample-output">
+          {evidence.sampleRows.map((row) => (
+            <div key={`${row.label}-${row.value}`}>
+              <dt>{row.label}</dt>
+              <dd>{row.value}</dd>
+            </div>
+          ))}
+        </dl>
+        {evidence.caption ? <figcaption>{evidence.caption}</figcaption> : null}
+      </figure>
+    );
+  }
+
   if (!evidence.src) {
     return null;
   }
