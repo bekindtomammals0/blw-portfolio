@@ -4,6 +4,7 @@
   --color-surface: #fff;
   --color-text-secondary: #475569;
   --color-border: #cbd5e1;
+  --color-accent-text: #713f12;
 
   font-family:
     Inter,
@@ -294,7 +295,7 @@ a {
 
 .metadata-row .status-tag {
   border-color: #a16207;
-  color: #713f12;
+  color: var(--color-accent-text);
   background: #fefce8;
 }
 

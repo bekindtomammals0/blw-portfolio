@@ -11,12 +11,14 @@ afterEach(cleanup);
 
 const developmentNotes = [
   {
+    id: 'b-loom-constraint-model',
     date: '2026-08-27',
     projectSlug: 'b-loom',
     type: 'Iteration',
     text: 'Separated hard placement blockers from scoring preferences after reviewing the scheduling model.',
   },
   {
+    id: 'missing-project-experiment',
     date: '2026-08-26',
     projectSlug: 'missing-project',
     type: 'Reflection',
@@ -66,6 +68,27 @@ describe('optional development notes', () => {
     expect(within(note).queryByRole('link')).not.toBeInTheDocument();
   });
 
+  it('renders every supplied structured note', () => {
+    const manyNotes: DevelopmentNote[] = Array.from(
+      { length: 7 },
+      (_, index) => ({
+        id: `build-note-${index}`,
+        date: `2026-08-${String(index + 1).padStart(2, '0')}`,
+        projectSlug: 'ui-greenmetric',
+        type: 'Build',
+        text: `Verified build note ${index + 1}.`,
+      }),
+    );
+
+    render(<App developmentNotes={manyNotes} />);
+
+    expect(
+      within(
+        screen.getByRole('list', { name: 'Development notes' }),
+      ).getAllByRole('listitem'),
+    ).toHaveLength(7);
+  });
+
   it('keeps note navigation keyboard-operable at a narrow viewport', () => {
     window.innerWidth = 320;
     render(<App developmentNotes={developmentNotes} />);
@@ -73,10 +96,17 @@ describe('optional development notes', () => {
     const projectLink = screen.getByRole('link', {
       name: 'B-Loom Class & Exam Scheduling System',
     });
+    const notes = screen.getByRole('list', { name: 'Development notes' });
     projectLink.focus();
 
     expect(projectLink).toHaveFocus();
     expect(projectLink).toHaveAttribute('href', '#project-b-loom');
+    expect(within(notes).getAllByRole('listitem')).toHaveLength(2);
+    expect(
+      within(notes).getByRole('article', {
+        name: 'Reflection note for missing-project',
+      }),
+    ).toBeInTheDocument();
   });
 });
 

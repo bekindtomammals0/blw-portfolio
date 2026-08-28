@@ -30,12 +30,12 @@ export function NotesSection({ notes, projects }: NotesSectionProps) {
         <h2 id="notes-title" className="section-title">
           Development notes
         </h2>
-        <ol className="notes-grid">
-          {notes.slice(0, 6).map((note) => {
+        <ol className="notes-grid" aria-label="Development notes">
+          {notes.map((note) => {
             const project = projectsBySlug.get(note.projectSlug);
 
             return (
-              <li key={`${note.date}-${note.projectSlug}-${note.type}`}>
+              <li key={note.id}>
                 <article
                   className="development-note"
                   aria-label={`${note.type} note for ${project?.name ?? note.projectSlug}`}
