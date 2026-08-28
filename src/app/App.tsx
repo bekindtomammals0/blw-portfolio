@@ -1,7 +1,10 @@
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
 import { projects } from '../data/projects';
+import { AboutSection } from '../sections/AboutSection';
+import { ApproachSection } from '../sections/ApproachSection';
 import { CaseStudiesSection } from '../sections/CaseStudiesSection';
+import { ContactSection } from '../sections/ContactSection';
 import { FeaturedWorkSection } from '../sections/FeaturedWorkSection';
 import { FoundationSection } from '../sections/FoundationSection';
 import { HeroSection } from '../sections/HeroSection';
@@ -29,24 +32,9 @@ export function App() {
           title="Optional by design."
           description="The notes data source is empty. Later work can add verified Build, Iteration, Experiment, or Reflection entries without making the portfolio depend on frequent publishing."
         />
-        <FoundationSection
-          id="approach"
-          eyebrow="Approach"
-          title="A section anchor ready for verified copy."
-          description="The final section will explain the documented path from understanding a bottleneck to testing and evolving the simplest system that handles its constraints."
-        />
-        <FoundationSection
-          id="about"
-          eyebrow="About"
-          title="Professional context without a resume wall."
-          description="The initialized layout keeps this section independent of a photograph and leaves the final concise biography to its implementation issue."
-        />
-        <FoundationSection
-          id="contact"
-          eyebrow="Contact"
-          title="Public contact links are awaiting verification."
-          description="Brian is based in the Philippines. Email, GitHub, LinkedIn, and Upwork links remain omitted until their production values are supplied and approved."
-        />
+        <ApproachSection />
+        <AboutSection />
+        <ContactSection />
       </main>
       <SiteFooter />
     </div>

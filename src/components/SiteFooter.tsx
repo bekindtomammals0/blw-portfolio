@@ -5,7 +5,9 @@ export function SiteFooter() {
         <p>
           Brian Christopher Bulawan · AI, Automation &amp; Systems Developer
         </p>
-        <p>Foundation preview · Public links pending verification</p>
+        <a className="text-link" href="#top">
+          Back to top
+        </a>
       </div>
     </footer>
   );

@@ -1,10 +1,12 @@
 // @vitest-environment jsdom
 
 import '@testing-library/jest-dom/vitest';
-import { render, screen, within } from '@testing-library/react';
-import { describe, expect, it } from 'vitest';
+import { cleanup, render, screen, within } from '@testing-library/react';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { App } from './App';
+
+afterEach(cleanup);
 
 describe('portfolio project path', () => {
   it('renders a featured project card linked to its five-part case study', () => {
@@ -56,5 +58,49 @@ describe('portfolio project path', () => {
         within(caseStudy).getByRole('heading', { name: sectionName }),
       ).toBeInTheDocument();
     }
+  });
+});
+
+describe('non-project visitor journey', () => {
+  it('explains the engineering approach and offers only verified contact links', () => {
+    render(<App />);
+
+    const approach = screen.getByRole('region', {
+      name: 'Structure the problem before choosing the technology.',
+    });
+    for (const step of [
+      'Understand the actual bottleneck',
+      'Make the process explicit',
+      'Build the simplest constraint-aware system',
+      'Test, observe, simplify, and evolve',
+    ]) {
+      expect(within(approach).getByText(step)).toBeInTheDocument();
+    }
+
+    const about = screen.getByRole('region', {
+      name: 'A practical systems builder working across software and operations.',
+    });
+    expect(
+      within(about).getByText(/AI, automation, and systems development/i),
+    ).toBeInTheDocument();
+    expect(within(about).queryByRole('img')).not.toBeInTheDocument();
+
+    const contact = screen.getByRole('region', {
+      name: 'Bring the problem, constraints, and desired outcome.',
+    });
+    expect(within(contact).getByText('Philippines')).toBeInTheDocument();
+    expect(
+      within(contact).getByRole('link', { name: 'Email' }),
+    ).toHaveAttribute('href', 'mailto:brianbulawan5@gmail.com');
+    expect(
+      within(contact).getByRole('link', { name: 'GitHub' }),
+    ).toHaveAttribute('href', 'https://github.com/bekindtomammals0');
+    expect(
+      within(contact).getByRole('link', { name: 'LinkedIn' }),
+    ).toHaveAttribute('href', 'https://www.linkedin.com/in/bbulawan/');
+    expect(
+      within(contact).queryByRole('link', { name: 'Upwork' }),
+    ).not.toBeInTheDocument();
+    expect(contact).not.toHaveTextContent('TODO_');
   });
 });
