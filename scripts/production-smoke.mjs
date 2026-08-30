@@ -27,8 +27,11 @@ const expectedLinks = new Map([
   ['About', '#about'],
   ['Contact', '#contact'],
 ]);
+const primaryNavigation = page.getByRole('navigation', {
+  name: 'Primary navigation',
+});
 for (const [name, href] of expectedLinks) {
-  const link = page.getByRole('link', { name, exact: true });
+  const link = primaryNavigation.getByRole('link', { name, exact: true });
   if ((await link.getAttribute('href')) !== href) {
     throw new Error(`${name} does not link to ${href}`);
   }
