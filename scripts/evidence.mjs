@@ -1,5 +1,12 @@
 import { createHash } from 'node:crypto';
-import { access, mkdir, readFile, readdir, writeFile } from 'node:fs/promises';
+import {
+  access,
+  copyFile,
+  mkdir,
+  readFile,
+  readdir,
+  writeFile,
+} from 'node:fs/promises';
 import path from 'node:path';
 
 import sharp from 'sharp';
@@ -42,8 +49,52 @@ export async function sha256(filePath) {
     .digest('hex');
 }
 
+export function approvalReceiptId(projectSlug, image) {
+  const approval = image.factualAttestation;
+  const disclosure = image.disclosureApproval;
+  return createHash('sha256')
+    .update(
+      JSON.stringify({
+        version: 1,
+        projectSlug,
+        imageId: image.id,
+        by: approval?.by,
+        at: approval?.at,
+        cardSha256: approval?.hashes?.card,
+        caseStudySha256: approval?.hashes?.caseStudy,
+        disclosureBy: disclosure?.by,
+        disclosureAt: disclosure?.at,
+      }),
+    )
+    .digest('hex');
+}
+
+export async function loadApprovalLedger(root) {
+  return JSON.parse(
+    await readFile(path.join(root, 'evidence', 'approvals.json'), 'utf8'),
+  );
+}
+
+export async function saveApprovalLedger(root, ledger) {
+  await writeFile(
+    path.join(root, 'evidence', 'approvals.json'),
+    `${JSON.stringify(ledger, null, 2)}\n`,
+  );
+}
+
 export async function validateEvidence(root) {
   const errors = [];
+  let ledger = { version: 0, receipts: [] };
+  try {
+    ledger = await loadApprovalLedger(root);
+  } catch {
+    errors.push(
+      'evidence/approvals.json: missing or unreadable approval ledger',
+    );
+  }
+  if (ledger.version !== 1 || !Array.isArray(ledger.receipts)) {
+    errors.push('evidence/approvals.json: invalid approval ledger');
+  }
 
   for (const projectSlug of projectSlugs) {
     let manifest;
@@ -95,41 +146,67 @@ export async function validateEvidence(root) {
         const filePath = path.join(root, 'src', variant.src);
         try {
           await access(filePath);
+          const metadata = await sharp(filePath).metadata();
+          if (
+            metadata.width !== variant.width ||
+            metadata.height !== variant.height
+          ) {
+            errors.push(
+              `${projectSlug}/${image.id}: ${variantName} dimensions do not match the public artifact`,
+            );
+          }
         } catch {
           errors.push(`${projectSlug}/${image.id}: missing ${variant.src}`);
         }
       }
 
-      const selectedVariant =
-        image.placement === 'card'
-          ? image.variants?.card
-          : image.variants?.caseStudy;
-      if (!selectedVariant?.src) continue;
-      const selectedPath = path.join(root, 'src', selectedVariant.src);
-      try {
-        const currentHash = await sha256(selectedPath);
+      const currentHashes = {};
+      for (const variantName of ['card', 'caseStudy']) {
+        const variant = image.variants?.[variantName];
+        if (!variant?.src) continue;
         for (const approvalName of [
           'factualAttestation',
           'disclosureApproval',
         ]) {
           const approval = image[approvalName];
+          try {
+            currentHashes[variantName] = await sha256(
+              path.join(root, 'src', variant.src),
+            );
+          } catch {
+            continue;
+          }
           if (
             !approval?.by ||
             !approval?.at ||
-            approval.sha256 !== currentHash
+            approval.hashes?.[variantName] !== currentHashes[variantName]
           ) {
             errors.push(
-              `${projectSlug}/${image.id}: valid ${approvalName} is required for the selected artifact`,
+              `${projectSlug}/${image.id}: valid ${approvalName} is required for the ${variantName} artifact`,
             );
           }
         }
-      } catch {
-        // Missing files were reported above.
+      }
+
+      const receiptId = approvalReceiptId(projectSlug, image);
+      const receipt = ledger.receipts.find(
+        (entry) =>
+          entry.id === receiptId &&
+          entry.projectSlug === projectSlug &&
+          entry.imageId === image.id,
+      );
+      if (!receipt) {
+        errors.push(
+          `${projectSlug}/${image.id}: guided approval receipt is required; manifest fields alone are not approval`,
+        );
       }
     }
 
-    if (cardCount > 1) {
-      errors.push(`${projectSlug}: at most one card image may be selected`);
+    const imageCount = manifest.images?.length ?? 0;
+    if (imageCount > 0 && cardCount !== 1) {
+      errors.push(
+        `${projectSlug}: screenshot evidence requires exactly one card image`,
+      );
     }
   }
 
@@ -154,13 +231,7 @@ export async function prepareEvidence(root, projectSlug) {
 
   const manifest = await loadManifest(root, projectSlug);
   const existingIds = new Set((manifest.images ?? []).map((image) => image.id));
-  const outputDirectory = path.join(
-    root,
-    'src',
-    'assets',
-    'projects',
-    projectSlug,
-  );
+  const outputDirectory = path.join(root, 'evidence-prepared', projectSlug);
   const prepared = [];
 
   for (const filename of files) {
@@ -219,4 +290,56 @@ export async function prepareEvidence(root, projectSlug) {
   }
 
   return prepared;
+}
+
+export async function promoteApprovedEvidence(
+  root,
+  projectSlug,
+  image,
+  { replace = false } = {},
+) {
+  const outputDirectory = path.join(
+    root,
+    'src',
+    'assets',
+    'projects',
+    projectSlug,
+  );
+  await mkdir(outputDirectory, { recursive: true });
+  const hashes = {};
+
+  for (const variantName of ['card', 'caseStudy']) {
+    const publicVariant = image.variants[variantName];
+    const filename = path.basename(publicVariant.src);
+    const preparedPath = path.join(
+      root,
+      'evidence-prepared',
+      projectSlug,
+      filename,
+    );
+    const publicPath = path.join(root, 'src', publicVariant.src);
+    await access(preparedPath);
+    if (!replace) {
+      try {
+        await access(publicPath);
+        throw new Error(
+          `${filename}: public artifact exists; use evidence:replace for an explicit replacement`,
+        );
+      } catch (error) {
+        if (error.code !== 'ENOENT') throw error;
+      }
+    }
+    const metadata = await sharp(preparedPath).metadata();
+    if (
+      metadata.width !== publicVariant.width ||
+      metadata.height !== publicVariant.height
+    ) {
+      throw new Error(
+        `${filename}: manifest dimensions do not match prepared bytes`,
+      );
+    }
+    await copyFile(preparedPath, publicPath);
+    hashes[variantName] = await sha256(publicPath);
+  }
+  return hashes;
 }

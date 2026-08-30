@@ -6,6 +6,7 @@ import sharp from 'sharp';
 import { describe, expect, it } from 'vitest';
 
 import {
+  approvalReceiptId,
   prepareEvidence,
   projectSlugs,
   sha256,
@@ -22,6 +23,10 @@ async function scaffoldManifests(root: string) {
         JSON.stringify({ projectSlug, version: 1, images: [] }),
       ),
     ),
+  );
+  await writeFile(
+    path.join(root, 'evidence/approvals.json'),
+    JSON.stringify({ version: 1, receipts: [] }),
   );
 }
 
@@ -50,8 +55,7 @@ describe('verified screenshot workflow', () => {
     expect(prepared.variants.caseStudy.width).toBe(1600);
     const card = path.join(
       root,
-      'src',
-      prepared.variants.card.src,
+      'evidence-prepared/ui-greenmetric/system-overview-card.webp',
     );
     const metadata = await sharp(card).metadata();
     expect(metadata.format).toBe('webp');
@@ -76,51 +80,98 @@ describe('verified screenshot workflow', () => {
     await mkdir(assetDirectory, { recursive: true });
     const card = path.join(assetDirectory, 'overview-card.webp');
     const caseStudy = path.join(assetDirectory, 'overview-case-study.webp');
-    await writeFile(card, 'approved bytes');
-    await writeFile(caseStudy, 'case study bytes');
-    const approvedHash = await sha256(card);
+    await sharp({
+      create: {
+        width: 800,
+        height: 400,
+        channels: 3,
+        background: '#c99a42',
+      },
+    })
+      .webp()
+      .toFile(card);
+    await sharp({
+      create: {
+        width: 1600,
+        height: 800,
+        channels: 3,
+        background: '#25231f',
+      },
+    })
+      .webp()
+      .toFile(caseStudy);
+    const hashes = {
+      card: await sha256(card),
+      caseStudy: await sha256(caseStudy),
+    };
     const approval = {
       by: 'bekindtomammals0',
       at: '2026-08-30T00:00:00.000Z',
-      sha256: approvedHash,
+      hashes,
+    };
+    const image = {
+      id: 'overview',
+      representation: 'synthetic',
+      alt: 'Synthetic overview.',
+      caption: 'Synthetic system overview.',
+      order: 0,
+      placement: 'card',
+      variants: {
+        card: {
+          src: 'assets/projects/ui-greenmetric/overview-card.webp',
+          width: 800,
+          height: 400,
+        },
+        caseStudy: {
+          src: 'assets/projects/ui-greenmetric/overview-case-study.webp',
+          width: 1600,
+          height: 800,
+        },
+      },
+      factualAttestation: approval,
+      disclosureApproval: approval,
     };
     await writeFile(
       path.join(root, 'evidence/manifests/ui-greenmetric.json'),
       JSON.stringify({
         projectSlug: 'ui-greenmetric',
         version: 1,
-        images: [
+        images: [image],
+      }),
+    );
+    await writeFile(
+      path.join(root, 'evidence/approvals.json'),
+      JSON.stringify({
+        version: 1,
+        receipts: [
           {
-            id: 'overview',
-            representation: 'synthetic',
-            alt: 'Synthetic overview.',
-            caption: 'Synthetic system overview.',
-            order: 0,
-            placement: 'card',
-            variants: {
-              card: {
-                src: 'assets/projects/ui-greenmetric/overview-card.webp',
-                width: 800,
-                height: 400,
-              },
-              caseStudy: {
-                src: 'assets/projects/ui-greenmetric/overview-case-study.webp',
-                width: 1600,
-                height: 800,
-              },
-            },
-            factualAttestation: approval,
-            disclosureApproval: approval,
+            id: approvalReceiptId('ui-greenmetric', image),
+            projectSlug: 'ui-greenmetric',
+            imageId: 'overview',
+            recordedBy: 'evidence:approve',
           },
         ],
       }),
     );
-    await writeFile(card, 'changed bytes');
+    await sharp({
+      create: {
+        width: 800,
+        height: 400,
+        channels: 3,
+        background: '#ffffff',
+      },
+    })
+      .webp()
+      .toFile(card);
 
     await expect(validateEvidence(root)).resolves.toEqual(
       expect.arrayContaining([
-        expect.stringContaining('valid factualAttestation is required'),
-        expect.stringContaining('valid disclosureApproval is required'),
+        expect.stringContaining(
+          'valid factualAttestation is required for the card artifact',
+        ),
+        expect.stringContaining(
+          'valid disclosureApproval is required for the card artifact',
+        ),
       ]),
     );
   });

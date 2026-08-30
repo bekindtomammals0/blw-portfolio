@@ -1,9 +1,20 @@
 import { createInterface } from 'node:readline/promises';
+import { spawn } from 'node:child_process';
 import process from 'node:process';
 
-import { loadManifest, saveManifest, sha256 } from './evidence.mjs';
+import {
+  approvalReceiptId,
+  loadApprovalLedger,
+  loadManifest,
+  promoteApprovedEvidence,
+  saveApprovalLedger,
+  saveManifest,
+} from './evidence.mjs';
 
-const [projectSlug, imageId] = process.argv.slice(2);
+const replace = process.argv.includes('--replace');
+const [projectSlug, imageId] = process.argv
+  .slice(2)
+  .filter((argument) => argument !== '--replace');
 if (!projectSlug || !imageId) {
   throw new Error(
     'Usage: npm run evidence:approve -- <project-slug> <image-id>',
@@ -16,29 +27,48 @@ const image = manifest.images.find((entry) => entry.id === imageId);
 if (!image)
   throw new Error(`Image ${imageId} is not in ${projectSlug}'s manifest`);
 
-const variant =
-  image.placement === 'card' ? image.variants.card : image.variants.caseStudy;
-const publicPath = `${root}/src/${variant.src}`;
-console.log('\nReview this exact final public artifact and metadata:');
-console.log(`Artifact: ${publicPath}`);
-console.log(`Dimensions: ${variant.width}×${variant.height}`);
+console.log('\nReview both exact final public variants and their metadata:');
+const preparedPaths = [];
+for (const [variantName, variant] of Object.entries(image.variants)) {
+  const filename = variant.src.split('/').at(-1);
+  const preparedPath = `${root}/evidence-prepared/${projectSlug}/${filename}`;
+  preparedPaths.push(preparedPath);
+  console.log(
+    `${variantName}: ${preparedPath} (${variant.width}×${variant.height})`,
+  );
+}
 console.log(`Representation: ${image.representation}`);
 console.log(`Alt text: ${image.alt}`);
 console.log(`Caption: ${image.caption}\n`);
+
+const previewCommand =
+  process.platform === 'darwin'
+    ? ['open', preparedPaths]
+    : process.platform === 'win32'
+      ? ['cmd', ['/c', 'start', '', ...preparedPaths]]
+      : ['xdg-open', [preparedPaths[0]]];
+const preview = spawn(previewCommand[0], previewCommand[1], {
+  detached: true,
+  stdio: 'ignore',
+});
+preview.on('error', () => {
+  console.warn('Could not open the image viewer; review the printed paths.');
+});
+preview.unref();
 
 const prompt = createInterface({
   input: process.stdin,
   output: process.stdout,
 });
 const factual = await prompt.question(
-  'Does this exact artifact accurately represent the stated working behavior? Type YES: ',
+  'Do both exact variants accurately represent the stated working behavior? Type YES: ',
 );
 if (factual !== 'YES') {
   prompt.close();
   throw new Error('Factual attestation was not granted');
 }
 const disclosure = await prompt.question(
-  'Is this exact artifact safe and approved for public disclosure? Type YES: ',
+  'Are both exact variants safe and approved for public disclosure? Type YES: ',
 );
 if (disclosure !== 'YES') {
   prompt.close();
@@ -50,9 +80,25 @@ const approver = await prompt.question(
 prompt.close();
 if (!approver.trim()) throw new Error('Approval attribution is required');
 
-const hash = await sha256(publicPath);
+const hashes = await promoteApprovedEvidence(root, projectSlug, image, {
+  replace,
+});
 const at = new Date().toISOString();
-image.factualAttestation = { by: approver.trim(), at, sha256: hash };
-image.disclosureApproval = { by: approver.trim(), at, sha256: hash };
+image.factualAttestation = { by: approver.trim(), at, hashes };
+image.disclosureApproval = { by: approver.trim(), at, hashes };
 await saveManifest(root, manifest);
-console.log(`Approval records written for SHA-256 ${hash}.`);
+
+const ledger = await loadApprovalLedger(root);
+ledger.receipts = ledger.receipts.filter(
+  (receipt) =>
+    receipt.projectSlug !== projectSlug || receipt.imageId !== imageId,
+);
+const receiptId = approvalReceiptId(projectSlug, image);
+ledger.receipts.push({
+  id: receiptId,
+  projectSlug,
+  imageId,
+  recordedBy: 'evidence:approve',
+});
+await saveApprovalLedger(root, ledger);
+console.log(`Approval receipt ${receiptId} written for both public variants.`);

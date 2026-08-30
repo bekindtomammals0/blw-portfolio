@@ -14,7 +14,9 @@
     "production:check": "node scripts/production-check.mjs",
     "evidence:prepare": "node scripts/evidence-prepare.mjs",
     "evidence:approve": "node scripts/evidence-approve.mjs",
+    "evidence:replace": "node scripts/evidence-approve.mjs --replace",
     "evidence:check": "node scripts/evidence-check.mjs",
+    "smoke:production": "node scripts/production-smoke.mjs",
     "preview": "vite preview"
   },
   "dependencies": {

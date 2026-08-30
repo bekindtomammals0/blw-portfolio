@@ -86,11 +86,14 @@ npm run evidence:check
 ```
 
 Preparation strips metadata and creates bounded card and case-study WebP
-variants. It does not sanitize, select, attest, approve, overwrite, or delete an
-artifact. Add the prepared variants and descriptive metadata to the project's
-manifest under `evidence/manifests/`, then use the guided approval command to
-review the exact selected public artifact. Both confirmations are bound to its
-SHA-256 hash; changing the bytes invalidates approval.
+variants under the gitignored `evidence-prepared/` directory. It does not
+sanitize, publish, select, attest, approve, overwrite, or delete an artifact.
+Add the prepared variants and descriptive metadata to the project's manifest
+under `evidence/manifests/`, then use the guided approval command to review and
+promote both exact variants. Both confirmations and the companion approval
+receipt are bound to their SHA-256 hashes; changing either file invalidates
+approval. Use `npm run evidence:replace -- <project-slug> <image-id>` when an
+approved public image must be explicitly replaced and re-approved.
 
 ## Deployment
 

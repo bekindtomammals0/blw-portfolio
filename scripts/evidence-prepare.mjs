@@ -19,5 +19,5 @@ for (const item of prepared) {
   );
 }
 console.log(
-  `Add each prepared image to evidence/manifests/${projectSlug}.json with representation, alt text, caption, order, placement, and the printed variants before approval.`,
+  `Prepared files remain unpublished under evidence-prepared/${projectSlug}/. Add each image to evidence/manifests/${projectSlug}.json with representation, alt text, caption, order, placement, and the printed variants before approval.`,
 );
