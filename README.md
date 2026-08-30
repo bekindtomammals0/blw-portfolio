@@ -92,8 +92,14 @@ Add the prepared variants and descriptive metadata to the project's manifest
 under `evidence/manifests/`, then use the guided approval command to review and
 promote both exact variants. Both confirmations and the companion approval
 receipt are bound to their SHA-256 hashes; changing either file invalidates
-approval. Use `npm run evidence:replace -- <project-slug> <image-id>` when an
-approved public image must be explicitly replaced and re-approved.
+approval. To replace an existing stable image ID, run
+`npm run evidence:prepare-replacement -- <project-slug>` and then
+`npm run evidence:replace -- <project-slug> <image-id>`; both overwrite actions
+are explicit and the replacement must be re-approved.
+
+Approval receipts are signed with an SSH key whose public key appears in
+`evidence/allowed_signers`. Direct manifest or ledger edits cannot produce a
+valid signature.
 
 ## Deployment
 

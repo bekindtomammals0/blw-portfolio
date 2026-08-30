@@ -1,9 +1,13 @@
 import { createInterface } from 'node:readline/promises';
-import { spawn } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
+import { mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
 import process from 'node:process';
 
 import {
   approvalReceiptId,
+  approvalPayload,
   loadApprovalLedger,
   loadManifest,
   promoteApprovedEvidence,
@@ -77,8 +81,12 @@ if (disclosure !== 'YES') {
 const approver = await prompt.question(
   'Approval attribution (name or GitHub login): ',
 );
-prompt.close();
 if (!approver.trim()) throw new Error('Approval attribution is required');
+const signingKey = await prompt.question(
+  'SSH private key path for the approved signer: ',
+);
+prompt.close();
+if (!signingKey.trim()) throw new Error('An SSH signing key is required');
 
 const hashes = await promoteApprovedEvidence(root, projectSlug, image, {
   replace,
@@ -94,11 +102,30 @@ ledger.receipts = ledger.receipts.filter(
     receipt.projectSlug !== projectSlug || receipt.imageId !== imageId,
 );
 const receiptId = approvalReceiptId(projectSlug, image);
+const signingDirectory = await mkdtemp(path.join(tmpdir(), 'blw-approval-'));
+const payloadPath = path.join(signingDirectory, receiptId);
+await writeFile(payloadPath, approvalPayload(projectSlug, image));
+const signed = spawnSync(
+  'ssh-keygen',
+  [
+    '-Y',
+    'sign',
+    '-f',
+    signingKey.trim(),
+    '-n',
+    'blw-portfolio-evidence',
+    payloadPath,
+  ],
+  { stdio: 'inherit' },
+);
+if (signed.status !== 0) throw new Error('SSH approval signing failed');
+const signature = await readFile(`${payloadPath}.sig`, 'utf8');
 ledger.receipts.push({
   id: receiptId,
   projectSlug,
   imageId,
   recordedBy: 'evidence:approve',
+  signature,
 });
 await saveApprovalLedger(root, ledger);
 console.log(`Approval receipt ${receiptId} written for both public variants.`);

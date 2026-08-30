@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto';
+import { spawnSync } from 'node:child_process';
 import {
   access,
   copyFile,
@@ -7,6 +8,7 @@ import {
   readdir,
   writeFile,
 } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 import path from 'node:path';
 
 import sharp from 'sharp';
@@ -50,23 +52,55 @@ export async function sha256(filePath) {
 }
 
 export function approvalReceiptId(projectSlug, image) {
+  return createHash('sha256')
+    .update(approvalPayload(projectSlug, image))
+    .digest('hex');
+}
+
+export function approvalPayload(projectSlug, image) {
   const approval = image.factualAttestation;
   const disclosure = image.disclosureApproval;
-  return createHash('sha256')
-    .update(
-      JSON.stringify({
-        version: 1,
-        projectSlug,
-        imageId: image.id,
-        by: approval?.by,
-        at: approval?.at,
-        cardSha256: approval?.hashes?.card,
-        caseStudySha256: approval?.hashes?.caseStudy,
-        disclosureBy: disclosure?.by,
-        disclosureAt: disclosure?.at,
-      }),
-    )
-    .digest('hex');
+  return JSON.stringify({
+    version: 1,
+    projectSlug,
+    imageId: image.id,
+    by: approval?.by,
+    at: approval?.at,
+    cardSha256: approval?.hashes?.card,
+    caseStudySha256: approval?.hashes?.caseStudy,
+    disclosureBy: disclosure?.by,
+    disclosureAt: disclosure?.at,
+  });
+}
+
+async function verifyApprovalSignature(root, projectSlug, image, receipt) {
+  if (!receipt?.signature || !image.factualAttestation?.by) return false;
+  const verificationDirectory = await mkdir(
+    path.join(tmpdir(), `blw-evidence-verify-${process.pid}`),
+    { recursive: true },
+  ).then(() => path.join(tmpdir(), `blw-evidence-verify-${process.pid}`));
+  const signaturePath = path.join(
+    verificationDirectory,
+    `${projectSlug}-${image.id}.sig`,
+  );
+  await writeFile(signaturePath, receipt.signature);
+  const result = spawnSync(
+    'ssh-keygen',
+    [
+      '-Y',
+      'verify',
+      '-f',
+      path.join(root, 'evidence', 'allowed_signers'),
+      '-I',
+      image.factualAttestation.by,
+      '-n',
+      'blw-portfolio-evidence',
+      '-s',
+      signaturePath,
+    ],
+    { input: approvalPayload(projectSlug, image), encoding: 'utf8' },
+  );
+  return result.status === 0;
 }
 
 export async function loadApprovalLedger(root) {
@@ -199,6 +233,12 @@ export async function validateEvidence(root) {
         errors.push(
           `${projectSlug}/${image.id}: guided approval receipt is required; manifest fields alone are not approval`,
         );
+      } else if (
+        !(await verifyApprovalSignature(root, projectSlug, image, receipt))
+      ) {
+        errors.push(
+          `${projectSlug}/${image.id}: approval receipt signature is invalid`,
+        );
       }
     }
 
@@ -213,7 +253,11 @@ export async function validateEvidence(root) {
   return errors;
 }
 
-export async function prepareEvidence(root, projectSlug) {
+export async function prepareEvidence(
+  root,
+  projectSlug,
+  { replace = false } = {},
+) {
   if (!projectSlugs.includes(projectSlug)) {
     throw new Error(`Unknown project slug: ${projectSlug}`);
   }
@@ -247,7 +291,7 @@ export async function prepareEvidence(root, projectSlug) {
         `${filename}: filename must be a stable kebab-case image ID`,
       );
     }
-    if (existingIds.has(imageId)) {
+    if (existingIds.has(imageId) && !replace) {
       throw new Error(
         `${filename}: image ID already exists; choose a new ID or perform an explicit replacement`,
       );
@@ -267,13 +311,15 @@ export async function prepareEvidence(root, projectSlug) {
     ]) {
       const outputName = `${imageId}-${variantName === 'card' ? 'card' : 'case-study'}.webp`;
       const outputPath = path.join(outputDirectory, outputName);
-      try {
-        await access(outputPath);
-        throw new Error(
-          `${outputName}: output already exists; nothing was overwritten`,
-        );
-      } catch (error) {
-        if (error.code !== 'ENOENT') throw error;
+      if (!replace) {
+        try {
+          await access(outputPath);
+          throw new Error(
+            `${outputName}: output already exists; nothing was overwritten`,
+          );
+        } catch (error) {
+          if (error.code !== 'ENOENT') throw error;
+        }
       }
       const result = await sharp(source)
         .rotate()

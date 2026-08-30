@@ -2,12 +2,15 @@ import process from 'node:process';
 
 import { prepareEvidence } from './evidence.mjs';
 
-const projectSlug = process.argv[2];
+const replace = process.argv.includes('--replace');
+const projectSlug = process.argv
+  .slice(2)
+  .find((argument) => argument !== '--replace');
 if (!projectSlug) {
   throw new Error('Usage: npm run evidence:prepare -- <project-slug>');
 }
 
-const prepared = await prepareEvidence(process.cwd(), projectSlug);
+const prepared = await prepareEvidence(process.cwd(), projectSlug, { replace });
 console.log('Prepared metadata-free WebP variants:');
 for (const item of prepared) {
   console.log(`- ${item.imageId}`);

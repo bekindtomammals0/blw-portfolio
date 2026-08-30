@@ -1,72 +1,84 @@
 import process from 'node:process';
 
+import { chromium } from 'playwright';
+
 const baseUrl = new URL(
   process.argv[2] ?? 'https://bekindtomammals0.github.io/blw-portfolio/',
 );
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage();
 
-async function fetchRequired(url, expectedType) {
-  let response;
-  for (let attempt = 1; attempt <= 12; attempt += 1) {
-    response = await fetch(url, { redirect: 'follow' }).catch(() => undefined);
-    if (response?.ok) break;
-    if (attempt < 12) await new Promise((resolve) => setTimeout(resolve, 5000));
+let loaded = false;
+for (let attempt = 1; attempt <= 12; attempt += 1) {
+  const response = await page
+    .goto(baseUrl.href, { waitUntil: 'networkidle' })
+    .catch(() => undefined);
+  if (response?.ok()) {
+    loaded = true;
+    break;
   }
-  if (!response?.ok) {
-    throw new Error(`${url} returned ${response?.status ?? 'no response'}`);
+  if (attempt < 12) await page.waitForTimeout(5000);
+}
+if (!loaded) throw new Error(`${baseUrl} did not return the portfolio`);
+
+const expectedLinks = new Map([
+  ['Work', '#work'],
+  ['Approach', '#approach'],
+  ['About', '#about'],
+  ['Contact', '#contact'],
+]);
+for (const [name, href] of expectedLinks) {
+  const link = page.getByRole('link', { name, exact: true });
+  if ((await link.getAttribute('href')) !== href) {
+    throw new Error(`${name} does not link to ${href}`);
   }
-  if (
-    expectedType &&
-    !response.headers.get('content-type')?.includes(expectedType)
-  ) {
-    throw new Error(`${url} did not return ${expectedType}`);
+  if ((await page.locator(href).count()) !== 1) {
+    throw new Error(`${href} does not resolve to one production target`);
   }
-  return response;
 }
 
-const pageResponse = await fetchRequired(baseUrl, 'text/html');
-const html = await pageResponse.text();
-for (const value of [
-  'Brian Christopher Bulawan',
-  'rel="canonical"',
-  'property="og:image"',
-]) {
-  if (!html.includes(value))
-    throw new Error(`Production HTML is missing ${value}`);
-}
-
-const assetPaths = [...html.matchAll(/(?:src|href)="([^"#?]+)"/g)]
-  .map((match) => new URL(match[1], baseUrl))
-  .filter((url) => url.origin === baseUrl.origin);
-const scripts = [];
-for (const assetUrl of assetPaths) {
-  const response = await fetchRequired(assetUrl);
-  if (assetUrl.pathname.endsWith('.js')) scripts.push(await response.text());
-}
-
-await fetchRequired(new URL('social-preview.webp', baseUrl), 'image/webp');
-await fetchRequired(new URL('favicon.svg', baseUrl), 'image/svg+xml');
 for (const fragment of [
-  '#work',
-  '#approach',
-  '#about',
-  '#contact',
   '#project-ui-greenmetric',
   '#project-badminton-tournament-operations',
   '#project-blwfinbot',
   '#project-b-loom',
-  'brianbulawan5@gmail.com',
-  'https://github.com/bekindtomammals0',
-  'https://www.linkedin.com/in/bbulawan/',
 ]) {
-  if (!scripts.some((script) => script.includes(fragment))) {
-    throw new Error(`Production bundle is missing ${fragment}`);
+  const deepLink = new URL(baseUrl);
+  deepLink.hash = fragment;
+  await page.goto(deepLink.href, { waitUntil: 'networkidle' });
+  await page.locator(fragment).waitFor({ state: 'visible' });
+  if (page.url() !== deepLink.href) {
+    throw new Error(`${fragment} did not remain addressable in production`);
   }
 }
 
-for (const fragment of ['#work', '#project-b-loom', '#contact']) {
-  const deepLink = new URL(baseUrl);
-  deepLink.hash = fragment;
-  await fetchRequired(deepLink, 'text/html');
+await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
+for (const [name, href] of [
+  ['Email', 'mailto:brianbulawan5@gmail.com'],
+  ['GitHub', 'https://github.com/bekindtomammals0'],
+  ['LinkedIn', 'https://www.linkedin.com/in/bbulawan/'],
+]) {
+  const actual = await page
+    .getByRole('link', { name, exact: true })
+    .getAttribute('href');
+  if (actual !== href) throw new Error(`${name} contact link is incorrect`);
 }
 
-console.log(`Production smoke check passed for ${baseUrl}`);
+const socialImage = await page
+  .locator('meta[property="og:image"]')
+  .getAttribute('content');
+if (!socialImage) throw new Error('Open Graph image metadata is missing');
+const socialResponse = await page.request.get(socialImage);
+if (
+  !socialResponse.ok() ||
+  !socialResponse.headers()['content-type']?.includes('image/webp')
+) {
+  throw new Error('Social preview is not a working WebP image');
+}
+const faviconResponse = await page.request.get(
+  new URL('favicon.svg', baseUrl).href,
+);
+if (!faviconResponse.ok()) throw new Error('Favicon is unavailable');
+
+await browser.close();
+console.log(`Production browser smoke check passed for ${baseUrl}`);
