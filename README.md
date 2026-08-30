@@ -69,6 +69,36 @@ npm run build
 
 Use `npm run preview` to inspect the production build locally.
 
+`npm run build` also enforces release metadata, canonical and asset links,
+unresolved `TODO_*` placeholders, likely secrets, static-only dependencies, and
+publication approval for selected screenshot evidence.
+
+## Public image evidence
+
+Unpublished evidence candidates belong in the gitignored
+`evidence-inbox/<project-slug>/` directory. PNG, JPEG, and WebP candidates use a
+stable kebab-case filename as their image ID.
+
+```sh
+npm run evidence:prepare -- <project-slug>
+npm run evidence:approve -- <project-slug> <image-id>
+npm run evidence:check
+```
+
+Preparation strips metadata and creates bounded card and case-study WebP
+variants. It does not sanitize, select, attest, approve, overwrite, or delete an
+artifact. Add the prepared variants and descriptive metadata to the project's
+manifest under `evidence/manifests/`, then use the guided approval command to
+review the exact selected public artifact. Both confirmations are bound to its
+SHA-256 hash; changing the bytes invalidates approval.
+
+## Deployment
+
+Pushes to `main` run the clean-install quality suite and deploy the static
+`dist/` artifact through GitHub Pages. The approved v0.1 canonical URL is
+<https://bekindtomammals0.github.io/blw-portfolio/>. No custom domain or backend
+is configured.
+
 ## Content hierarchy
 
 The site should remain useful even when development notes stop for months.

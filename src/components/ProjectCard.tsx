@@ -1,4 +1,5 @@
 import type { PortfolioProject } from '../types/portfolio';
+import { imageEvidenceFor } from '../data/imageEvidence';
 import { ProjectEvidence } from './ProjectEvidence';
 
 interface ProjectCardProps {
@@ -7,6 +8,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project }: ProjectCardProps) {
   const headingId = `project-card-${project.slug}`;
+  const cardEvidence = imageEvidenceFor(project.imageEvidenceSlug, 'card')[0];
 
   return (
     <article className="project-card" aria-labelledby={headingId}>
@@ -27,8 +29,8 @@ export function ProjectCard({ project }: ProjectCardProps) {
           Explore system <span aria-hidden="true">↓</span>
         </a>
       </div>
-      {project.evidence[0] ? (
-        <ProjectEvidence evidence={project.evidence[0]} />
+      {(cardEvidence ?? project.evidence[0]) ? (
+        <ProjectEvidence evidence={cardEvidence ?? project.evidence[0]} />
       ) : null}
     </article>
   );

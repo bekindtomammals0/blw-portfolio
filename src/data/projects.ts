@@ -30,6 +30,7 @@ export const projects = [
         steps: ['Requirement', 'Evidence reference', 'Owner review', 'Status'],
       },
     ],
+    imageEvidenceSlug: 'ui-greenmetric',
     links: [],
     developmentNotes: [],
     confidentialityNote:
@@ -81,6 +82,7 @@ export const projects = [
         ],
       },
     ],
+    imageEvidenceSlug: 'badminton-tournament-operations',
     links: [],
     developmentNotes: [],
     contribution:
@@ -158,6 +160,7 @@ export const projects = [
         ],
       },
     ],
+    imageEvidenceSlug: 'blwfinbot',
     links: [],
     developmentNotes: [],
     contribution:
@@ -260,6 +263,7 @@ export const projects = [
         ],
       },
     ],
+    imageEvidenceSlug: 'b-loom',
     links: [],
     developmentNotes: [],
     contribution:

@@ -1,4 +1,5 @@
 import type { DisclosureLevel, PortfolioProject } from '../types/portfolio';
+import { imageEvidenceFor } from '../data/imageEvidence';
 import { ProjectEvidence } from './ProjectEvidence';
 
 interface ProjectCaseStudyProps {
@@ -21,6 +22,11 @@ const disclosureLabels: Record<DisclosureLevel, string> = {
 };
 
 export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
+  const imageEvidence = imageEvidenceFor(
+    project.imageEvidenceSlug,
+    'case-study',
+  );
+
   return (
     <article
       id={`project-${project.slug}`}
@@ -71,7 +77,7 @@ export function ProjectCaseStudy({ project }: ProjectCaseStudyProps) {
         </section>
       ) : null}
 
-      {project.evidence.map((evidence, index) => (
+      {[...imageEvidence, ...project.evidence].map((evidence, index) => (
         <ProjectEvidence
           evidence={evidence}
           key={`${evidence.type}-${index}`}

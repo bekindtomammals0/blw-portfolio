@@ -5,12 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "npm run production:check && tsc -b && vite build && node scripts/dist-check.mjs",
     "lint": "eslint .",
     "test": "vitest run",
     "typecheck": "tsc -b",
-    "format": "prettier --write \"src/**/*.{ts,tsx,css}\" \"*.{js,json,ts,html}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,css}\" \"*.{js,json,ts,html}\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx,css,json}\" \"scripts/**/*.{mjs,json}\" \"evidence/**/*.json\" \"*.{js,json,ts,html}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,css,json}\" \"scripts/**/*.{mjs,json}\" \"evidence/**/*.json\" \"*.{js,json,ts,html}\"",
+    "production:check": "node scripts/production-check.mjs",
+    "evidence:prepare": "node scripts/evidence-prepare.mjs",
+    "evidence:approve": "node scripts/evidence-approve.mjs",
+    "evidence:check": "node scripts/evidence-check.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -31,6 +35,8 @@
     "globals": "^17.9.0",
     "jsdom": "^29.1.1",
     "prettier": "^3.9.6",
+    "sharp": "^0.35.4",
+    "sharp": "^0.35.4",
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.66.0",

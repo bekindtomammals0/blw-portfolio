@@ -43,7 +43,21 @@ export function ProjectEvidence({ evidence }: ProjectEvidenceProps) {
 
   return (
     <figure className="evidence-panel">
-      <img src={evidence.src} alt={evidence.alt ?? ''} loading="lazy" />
+      <img
+        src={evidence.src}
+        alt={evidence.alt ?? ''}
+        width={evidence.width}
+        height={evidence.height}
+        loading="lazy"
+        decoding="async"
+      />
+      {evidence.representation && evidence.representation !== 'original' ? (
+        <p className="evidence-label">
+          {evidence.representation === 'synthetic'
+            ? 'Synthetic data'
+            : `${evidence.representation[0].toUpperCase()}${evidence.representation.slice(1)}`}
+        </p>
+      ) : null}
       {evidence.caption ? <figcaption>{evidence.caption}</figcaption> : null}
     </figure>
   );

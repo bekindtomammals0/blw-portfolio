@@ -29,6 +29,9 @@ export interface ProjectEvidence {
   src?: string;
   alt?: string;
   caption?: string;
+  width?: number;
+  height?: number;
+  representation?: 'original' | 'redacted' | 'reconstructed' | 'synthetic';
   steps?: string[];
   sampleRows?: Array<{
     label: string;
@@ -59,6 +62,7 @@ export interface PortfolioProject {
   outcome: string;
   evolution: string;
   evidence: ProjectEvidence[];
+  imageEvidenceSlug?: string;
   links: ProjectLink[];
   developmentNotes: DevelopmentNote[];
   contribution?: string;

@@ -409,6 +409,16 @@ img {
   line-height: 1.5;
 }
 
+.evidence-label {
+  margin: 0.75rem 0 0;
+  color: var(--color-accent-strong);
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .project-case-study {
   border-top: 4px solid #0f172a;
   padding-top: 2rem;
