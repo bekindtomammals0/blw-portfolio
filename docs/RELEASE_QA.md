@@ -8,7 +8,13 @@ npm run lint
 npm run format:check
 npm test
 npm run build
+npm run smoke:artifact
 ```
+
+`smoke:artifact` launches the built `dist/` output locally and verifies the
+release navigation, featured-project deep links, contacts, favicon, and social
+preview in Chromium. See `RELEASE_PROCESS.md` for CI, promotion, live
+verification, and rollback operations.
 
 ## Keyboard and screen-reader journey
 
