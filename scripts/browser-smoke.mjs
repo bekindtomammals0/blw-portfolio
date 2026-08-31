@@ -23,6 +23,26 @@ const expectedFeaturedLinks = new Map([
   ['Explore UI GreenMetric Coordination Dashboard', '#project-ui-greenmetric'],
 ]);
 
+const viewportHeight = 900;
+const mobileBreakpoint = 768;
+const navigationWidthTolerance = 48;
+const minimumTouchTarget = 44;
+const geometryTolerance = 1;
+
+async function assertTargetClearsHeader(page, target, context) {
+  const [headerBounds, targetBounds] = await Promise.all([
+    page.locator('.site-header').boundingBox(),
+    page.locator(target).boundingBox(),
+  ]);
+  if (
+    headerBounds &&
+    targetBounds &&
+    targetBounds.y < headerBounds.y + headerBounds.height - geometryTolerance
+  ) {
+    throw new Error(`${context} is obscured by the sticky header`);
+  }
+}
+
 export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
   const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
@@ -44,7 +64,7 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
     const responsiveWidths = [320, 375, 768, 1280];
     const zoomedWidths = responsiveWidths.map((width) => Math.ceil(width / 2));
     for (const width of [...zoomedWidths, ...responsiveWidths]) {
-      await page.setViewportSize({ width, height: 900 });
+      await page.setViewportSize({ width, height: viewportHeight });
       await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
 
       const layout = await page.evaluate(() => {
@@ -86,35 +106,36 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
           `Page overflows horizontally at ${width}px: ${layout.overflowers.join(', ')}`,
         );
       }
-      if (width <= 768 && layout.navigationWidth < width - 48) {
+      if (
+        width <= mobileBreakpoint &&
+        layout.navigationWidth < width - navigationWidthTolerance
+      ) {
         throw new Error(`Primary navigation does not reflow at ${width}px`);
       }
-      if (layout.narrowestTarget < 44) {
+      if (layout.narrowestTarget < minimumTouchTarget) {
         throw new Error(
           `Primary navigation targets are too small at ${width}px`,
         );
       }
-      if (Math.abs(layout.headerOffset - layout.headerHeight) > 1) {
+      if (
+        Math.abs(layout.headerOffset - layout.headerHeight) > geometryTolerance
+      ) {
         throw new Error(`Sticky-header offset is stale at ${width}px`);
       }
 
-      const responsiveDeepLink = new URL(baseUrl);
-      responsiveDeepLink.hash = '#project-blwfinbot';
-      await page.goto(responsiveDeepLink.href, { waitUntil: 'networkidle' });
-      const [responsiveHeader, responsiveTarget] = await Promise.all([
-        page.locator('.site-header').boundingBox(),
-        page.locator('#project-blwfinbot').boundingBox(),
-      ]);
-      if (
-        responsiveHeader &&
-        responsiveTarget &&
-        responsiveTarget.y < responsiveHeader.y + responsiveHeader.height - 1
-      ) {
-        throw new Error(`Responsive deep link is obscured at ${width}px`);
+      for (const fragment of expectedFeaturedLinks.values()) {
+        const responsiveDeepLink = new URL(baseUrl);
+        responsiveDeepLink.hash = fragment;
+        await page.goto(responsiveDeepLink.href, { waitUntil: 'networkidle' });
+        await assertTargetClearsHeader(
+          page,
+          fragment,
+          `Responsive deep link ${fragment} at ${width}px`,
+        );
       }
     }
 
-    await page.setViewportSize({ width: 320, height: 900 });
+    await page.setViewportSize({ width: 320, height: viewportHeight });
     await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
     await page.keyboard.press('Tab');
     if (
@@ -136,13 +157,13 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
     }));
     if (
       reducedMotionStyles.scrollBehavior !== 'auto' ||
-      reducedMotionStyles.transitionDuration === '0.16s'
+      Number.parseFloat(reducedMotionStyles.transitionDuration) > 0.001
     ) {
       throw new Error('Reduced-motion treatment is not active');
     }
     await page.emulateMedia({ reducedMotion: 'no-preference' });
 
-    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.setViewportSize({ width: 1280, height: viewportHeight });
     await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
 
     const primaryNavigation = page.getByRole('navigation', {
@@ -172,40 +193,27 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
       if (page.url() !== deepLink.href) {
         throw new Error(`${fragment} did not remain addressable`);
       }
-      const [headerBounds, targetBounds] = await Promise.all([
-        page.locator('.site-header').boundingBox(),
-        page.locator(fragment).boundingBox(),
-      ]);
-      if (
-        headerBounds &&
-        targetBounds &&
-        targetBounds.y < headerBounds.y + headerBounds.height - 1
-      ) {
-        throw new Error(`${fragment} is obscured by the sticky header`);
-      }
+      await assertTargetClearsHeader(page, fragment, fragment);
     }
 
-    await page.setViewportSize({ width: 320, height: 900 });
+    const [historyLinkName, historyFragment] = expectedFeaturedLinks
+      .entries()
+      .next().value;
+    await page.setViewportSize({ width: 320, height: viewportHeight });
     await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
     await page
-      .getByRole('link', { name: 'Explore BLWFinBot', exact: true })
+      .getByRole('link', { name: historyLinkName, exact: true })
       .click();
     await page.goBack();
     await page.goForward();
-    if (!page.url().endsWith('#project-blwfinbot')) {
+    if (!page.url().endsWith(historyFragment)) {
       throw new Error('Project deep link did not survive Back and Forward');
     }
-    const [historyHeader, historyTarget] = await Promise.all([
-      page.locator('.site-header').boundingBox(),
-      page.locator('#project-blwfinbot').boundingBox(),
-    ]);
-    if (
-      historyHeader &&
-      historyTarget &&
-      historyTarget.y < historyHeader.y + historyHeader.height - 1
-    ) {
-      throw new Error('History-restored deep link is obscured on mobile');
-    }
+    await assertTargetClearsHeader(
+      page,
+      historyFragment,
+      'History-restored mobile deep link',
+    );
 
     const featuredCards = page.locator('#work article');
     const caseStudies = page.locator('#case-studies article');
