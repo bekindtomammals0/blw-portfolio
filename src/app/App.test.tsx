@@ -228,14 +228,15 @@ describe('portfolio project path', () => {
       within(caseStudy).getByText('Sanitized case study'),
     ).toBeInTheDocument();
     expect(
-      within(caseStudy).getByText(/Institutional records.*are excluded/),
+      within(caseStudy).getByText(
+        'Synthetic reconstruction; no institutional records, internal links, credentials, or operational data shown.',
+      ),
     ).toBeInTheDocument();
     expect(
       within(caseStudy).getByRole('figure', {
         name: /requirements moving through evidence reference/i,
       }),
     ).toBeInTheDocument();
-    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
     for (const sectionName of [
       'Problem',
       'System',
@@ -271,7 +272,9 @@ describe('portfolio project path', () => {
     expect(caseStudy).toHaveTextContent('Operational');
     expect(caseStudy).toHaveTextContent('Sanitized case study');
     expect(caseStudy).toHaveTextContent(/multiple events/i);
-    expect(caseStudy).toHaveTextContent(/synthetic participant records/i);
+    expect(caseStudy).toHaveTextContent(
+      /Synthetic reconstruction; no participant data, production spreadsheets, private links, or event records shown/i,
+    );
     expect(caseStudy).toHaveTextContent(/registration/i);
     expect(caseStudy).toHaveTextContent(/scheduling/i);
     expect(caseStudy).toHaveTextContent(/match progression/i);
@@ -284,7 +287,6 @@ describe('portfolio project path', () => {
         name: /registration records flow into scheduling/i,
       }),
     ).toBeInTheDocument();
-    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
   });
 
   it('publishes verified BLWFinBot v1 without presenting planned v2 work as current', () => {
@@ -314,7 +316,9 @@ describe('portfolio project path', () => {
     expect(caseStudy).toHaveTextContent(/planned v2/i);
     expect(caseStudy).toHaveTextContent(/human-directed/i);
     expect(caseStudy).toHaveTextContent(/AI-assisted development/i);
-    expect(caseStudy).toHaveTextContent(/synthetic financial data/i);
+    expect(caseStudy).toHaveTextContent(
+      /Synthetic reconstruction; no personal financial data, messages, receipts, contract rates, credentials, deployment details, or private repository links shown/i,
+    );
     expect(
       within(caseStudy).getByRole('figure', {
         name: /Telegram message flows through deterministic parsing/i,
@@ -325,7 +329,6 @@ describe('portfolio project path', () => {
         name: /synthetic Ledger sample/i,
       }),
     ).toHaveTextContent('Project payment');
-    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
   });
 
   it('publishes B-Loom as a paused sanitized scheduling system with future optimization separated', () => {
@@ -357,7 +360,9 @@ describe('portfolio project path', () => {
     expect(caseStudy).toHaveTextContent(/CP-SAT.*future/i);
     expect(caseStudy).toHaveTextContent(/Brian directed/i);
     expect(caseStudy).toHaveTextContent(/AI-assisted development/i);
-    expect(caseStudy).toHaveTextContent(/entirely synthetic/i);
+    expect(caseStudy).toHaveTextContent(
+      /Synthetic reconstruction; no institutional records, actual schedules, credentials, internal network details, operational screenshots, or private repository links shown/i,
+    );
     expect(
       within(caseStudy).getByRole('figure', {
         name: /synthetic scheduling data flows from import/i,
@@ -383,7 +388,24 @@ describe('portfolio project path', () => {
         name: /before and after review sample/i,
       }),
     ).toHaveTextContent('After human review');
-    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
+  });
+
+  it('keeps unapproved project links out of every sanitized case study', () => {
+    render(<App />);
+
+    for (const name of [
+      'UI GreenMetric Coordination Dashboard',
+      'Badminton Tournament Operations System',
+      'BLWFinBot',
+      'B-Loom Class & Exam Scheduling System',
+    ]) {
+      const caseStudy = screen.getByRole('article', {
+        name: `${name} case study`,
+      });
+
+      expect(caseStudy).toHaveTextContent('Sanitized case study');
+      expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
+    }
   });
 });
 
