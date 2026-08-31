@@ -41,7 +41,9 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
     }
     if (!loaded) throw new Error(`${baseUrl} did not return the portfolio`);
 
-    for (const width of [320, 375, 768, 1280]) {
+    const responsiveWidths = [320, 375, 768, 1280];
+    const zoomedWidths = responsiveWidths.map((width) => Math.ceil(width / 2));
+    for (const width of [...zoomedWidths, ...responsiveWidths]) {
       await page.setViewportSize({ width, height: 900 });
       await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
 
@@ -65,13 +67,26 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
           narrowestTarget: Math.min(
             ...links.map((link) => link.getBoundingClientRect().height),
           ),
+          overflowers: [...document.querySelectorAll('body *')]
+            .filter(
+              (element) =>
+                element.getBoundingClientRect().right >
+                document.documentElement.clientWidth + 1,
+            )
+            .slice(0, 5)
+            .map(
+              (element) =>
+                `${element.tagName.toLowerCase()}.${element.className}`,
+            ),
         };
       });
 
       if (layout.hasOverflow) {
-        throw new Error(`Page overflows horizontally at ${width}px`);
+        throw new Error(
+          `Page overflows horizontally at ${width}px: ${layout.overflowers.join(', ')}`,
+        );
       }
-      if (width < 768 && layout.navigationWidth < width - 48) {
+      if (width <= 768 && layout.navigationWidth < width - 48) {
         throw new Error(`Primary navigation does not reflow at ${width}px`);
       }
       if (layout.narrowestTarget < 44) {
@@ -82,7 +97,50 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
       if (Math.abs(layout.headerOffset - layout.headerHeight) > 1) {
         throw new Error(`Sticky-header offset is stale at ${width}px`);
       }
+
+      const responsiveDeepLink = new URL(baseUrl);
+      responsiveDeepLink.hash = '#project-blwfinbot';
+      await page.goto(responsiveDeepLink.href, { waitUntil: 'networkidle' });
+      const [responsiveHeader, responsiveTarget] = await Promise.all([
+        page.locator('.site-header').boundingBox(),
+        page.locator('#project-blwfinbot').boundingBox(),
+      ]);
+      if (
+        responsiveHeader &&
+        responsiveTarget &&
+        responsiveTarget.y < responsiveHeader.y + responsiveHeader.height - 1
+      ) {
+        throw new Error(`Responsive deep link is obscured at ${width}px`);
+      }
     }
+
+    await page.setViewportSize({ width: 320, height: 900 });
+    await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
+    await page.keyboard.press('Tab');
+    if (
+      (await page.locator(':focus').textContent())?.trim() !== 'Skip to content'
+    ) {
+      throw new Error('Skip link is not first in the keyboard order');
+    }
+    await page.keyboard.press('Enter');
+    if ((await page.locator(':focus').getAttribute('id')) !== 'main-content') {
+      throw new Error('Skip link does not move focus past the sticky header');
+    }
+
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
+    const reducedMotionStyles = await page.evaluate(() => ({
+      scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior,
+      transitionDuration: getComputedStyle(document.querySelector('.nav-link'))
+        .transitionDuration,
+    }));
+    if (
+      reducedMotionStyles.scrollBehavior !== 'auto' ||
+      reducedMotionStyles.transitionDuration === '0.16s'
+    ) {
+      throw new Error('Reduced-motion treatment is not active');
+    }
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
 
     await page.setViewportSize({ width: 1280, height: 900 });
     await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
@@ -127,6 +185,7 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
       }
     }
 
+    await page.setViewportSize({ width: 320, height: 900 });
     await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
     await page
       .getByRole('link', { name: 'Explore BLWFinBot', exact: true })
@@ -135,6 +194,17 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
     await page.goForward();
     if (!page.url().endsWith('#project-blwfinbot')) {
       throw new Error('Project deep link did not survive Back and Forward');
+    }
+    const [historyHeader, historyTarget] = await Promise.all([
+      page.locator('.site-header').boundingBox(),
+      page.locator('#project-blwfinbot').boundingBox(),
+    ]);
+    if (
+      historyHeader &&
+      historyTarget &&
+      historyTarget.y < historyHeader.y + historyHeader.height - 1
+    ) {
+      throw new Error('History-restored deep link is obscured on mobile');
     }
 
     const featuredCards = page.locator('#work article');
