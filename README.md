@@ -2,6 +2,8 @@
 
 Personal portfolio for **Brian Christopher Bulawan — AI, Automation & Systems Developer**.
 
+**[View live portfolio](https://bekindtomammals0.github.io/blw-portfolio/)**
+
 The portfolio presents practical systems built to make workflows more structured, adaptable, and capable of producing more predictable outcomes. It is intentionally not a repository gallery. Projects are presented as engineering case studies centered on the problem, the system designed, the engineering decisions, the outcome, and the system's evolution.
 
 ## Portfolio thesis
