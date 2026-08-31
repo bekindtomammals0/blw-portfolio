@@ -2,7 +2,10 @@ import { contact } from '../data/contact';
 
 export function HeroSection() {
   const profileChannels = contact.channels.filter(
-    (channel) => channel.label === 'GitHub' || channel.label === 'LinkedIn',
+    (channel) =>
+      channel.label === 'Email' ||
+      channel.label === 'GitHub' ||
+      channel.label === 'LinkedIn',
   );
 
   return (

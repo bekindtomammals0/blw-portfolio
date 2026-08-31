@@ -6,10 +6,12 @@ export const projects = [
     name: 'UI GreenMetric Coordination Dashboard',
     tagline:
       'A shared coordination system for organizing requirements, evidence references, ownership, missing items, and submission status.',
-    cardContribution:
-      'Brian designed the shared requirement, evidence, ownership, missing-item, and status structure used to coordinate the workflow.',
-    cardOutcome:
-      'Made requirements, ownership, missing items, and submission status visible in one shared workflow.',
+    cardSummary: {
+      contribution:
+        'Brian designed the shared requirement, evidence, ownership, missing-item, and status structure used to coordinate the workflow.',
+      outcome:
+        'Made requirements, ownership, missing items, and submission status visible in one shared workflow.',
+    },
     status: 'Operational',
     disclosure: 'sanitized-case-study',
     featured: true,
@@ -45,10 +47,12 @@ export const projects = [
     name: 'Badminton Tournament Operations System',
     tagline:
       'An evolving family of event tools that structures registration, scheduling, match progression, and event-day coordination.',
-    cardContribution:
-      'Brian structured the tournament lifecycle and adapted its operational views as event needs changed.',
-    cardOutcome:
-      'Made tournament information more manageable across registration, scheduling, match progression, and event-day decisions.',
+    cardSummary: {
+      contribution:
+        'Brian designed the tournament lifecycle structure and implemented operational views that adapted as event needs changed.',
+      outcome:
+        'Made tournament information more manageable across registration, scheduling, match progression, and event-day decisions.',
+    },
     status: 'Operational',
     disclosure: 'sanitized-case-study',
     featured: true,
@@ -103,10 +107,12 @@ export const projects = [
     name: 'BLWFinBot',
     tagline:
       'A conversational personal-finance system for recording transactions and checking whether income can support a goal.',
-    cardContribution:
-      'Brian directed the requirements, architecture, implementation decisions, validation, debugging, release baseline, and deployment constraints.',
-    cardOutcome:
-      'Unified transaction capture, correction, categorization, and goal checks in one conversational workflow.',
+    cardSummary: {
+      contribution:
+        'Brian directed the requirements, architecture, implementation decisions, validation, debugging, release baseline, and deployment constraints.',
+      outcome:
+        'Unified transaction capture, correction, categorization, and goal checks in one conversational workflow.',
+    },
     status: 'Operational',
     disclosure: 'sanitized-case-study',
     featured: true,
@@ -185,10 +191,12 @@ export const projects = [
     name: 'B-Loom Class & Exam Scheduling System',
     tagline:
       'A constraint-aware application for importing academic data, generating exam schedules, reviewing conflicts, and exporting schedule artifacts.',
-    cardContribution:
-      'Brian directed the domain and constraint model, architecture, implementation decisions, validation, debugging, and private deployment constraints.',
-    cardOutcome:
-      'Brought import, constraint checking, heuristic generation, human review, editing, and export into one scheduling workflow.',
+    cardSummary: {
+      contribution:
+        'Brian directed the domain and constraint model, architecture, implementation decisions, validation, debugging, and private deployment constraints.',
+      outcome:
+        'Brought import, constraint checking, heuristic generation, human review, editing, and export into one scheduling workflow.',
+    },
     status: 'Paused',
     disclosure: 'sanitized-case-study',
     featured: true,
@@ -297,9 +305,19 @@ const featuredProjectOrder = [
 ] as const;
 
 export function orderedFeaturedProjects(allProjects: PortfolioProject[]) {
-  return featuredProjectOrder
-    .map((slug) => allProjects.find((project) => project.slug === slug))
-    .filter(
-      (project): project is PortfolioProject => project?.featured === true,
-    );
+  return allProjects
+    .filter((project) => project.featured)
+    .slice()
+    .sort((left, right) => {
+      const leftRank = featuredProjectOrder.indexOf(
+        left.slug as (typeof featuredProjectOrder)[number],
+      );
+      const rightRank = featuredProjectOrder.indexOf(
+        right.slug as (typeof featuredProjectOrder)[number],
+      );
+      return (
+        (leftRank === -1 ? Number.MAX_SAFE_INTEGER : leftRank) -
+        (rightRank === -1 ? Number.MAX_SAFE_INTEGER : rightRank)
+      );
+    });
 }

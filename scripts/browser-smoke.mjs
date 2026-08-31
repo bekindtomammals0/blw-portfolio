@@ -95,6 +95,13 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
           throw new Error(`Featured card is missing ${label}`);
         }
       }
+      for (const summary of await card
+        .locator('.project-card-summary dd')
+        .allTextContents()) {
+        if (summary.trim().length < 20) {
+          throw new Error('Featured card recruiter information is incomplete');
+        }
+      }
     }
 
     await page.goto(baseUrl.href, { waitUntil: 'networkidle' });

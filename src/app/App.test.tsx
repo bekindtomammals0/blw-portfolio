@@ -114,11 +114,17 @@ describe('portfolio project path', () => {
   it('leads with the approved projects in the same order across summary and detail', () => {
     render(<App />);
 
-    const expectedOrder = [
-      'BLWFinBot',
-      'Badminton Tournament Operations System',
-      'B-Loom Class & Exam Scheduling System',
-      'UI GreenMetric Coordination Dashboard',
+    const expectedProjects = [
+      { name: 'BLWFinBot', slug: 'blwfinbot' },
+      {
+        name: 'Badminton Tournament Operations System',
+        slug: 'badminton-tournament-operations',
+      },
+      { name: 'B-Loom Class & Exam Scheduling System', slug: 'b-loom' },
+      {
+        name: 'UI GreenMetric Coordination Dashboard',
+        slug: 'ui-greenmetric',
+      },
     ];
     const featuredWork = screen.getByRole('region', {
       name: 'Systems built around real operational problems.',
@@ -131,12 +137,7 @@ describe('portfolio project path', () => {
       within(featuredWork)
         .getAllByRole('article')
         .map((card) => card.getAttribute('aria-labelledby')),
-    ).toEqual(
-      expectedOrder.map(
-        (name) =>
-          `project-card-${name === 'BLWFinBot' ? 'blwfinbot' : name === 'Badminton Tournament Operations System' ? 'badminton-tournament-operations' : name === 'B-Loom Class & Exam Scheduling System' ? 'b-loom' : 'ui-greenmetric'}`,
-      ),
-    );
+    ).toEqual(expectedProjects.map(({ slug }) => `project-card-${slug}`));
     expect(
       within(caseStudies)
         .getAllByRole('article')
@@ -144,7 +145,7 @@ describe('portfolio project path', () => {
           (study) =>
             within(study).getByRole('heading', { level: 3 }).textContent,
         ),
-    ).toEqual(expectedOrder);
+    ).toEqual(expectedProjects.map(({ name }) => name));
   });
 
   it('puts system, contribution, and outcome evidence on every featured card', () => {
@@ -154,12 +155,43 @@ describe('portfolio project path', () => {
       name: 'Systems built around real operational problems.',
     });
 
-    for (const card of within(featuredWork).getAllByRole('article')) {
+    const recruiterCopy = new Map([
+      [
+        'BLWFinBot',
+        [/Brian directed the requirements/, /Unified transaction capture/],
+      ],
+      [
+        'Badminton Tournament Operations System',
+        [
+          /Brian designed the tournament lifecycle/,
+          /more manageable across registration/,
+        ],
+      ],
+      [
+        'B-Loom Class & Exam Scheduling System',
+        [
+          /Brian directed the domain and constraint model/,
+          /Brought import, constraint checking/,
+        ],
+      ],
+      [
+        'UI GreenMetric Coordination Dashboard',
+        [
+          /Brian designed the shared requirement/,
+          /Made requirements, ownership/,
+        ],
+      ],
+    ]);
+
+    for (const [name, [contribution, outcome]] of recruiterCopy) {
+      const card = within(featuredWork).getByRole('article', { name });
       expect(within(card).getByText('System')).toBeInTheDocument();
       expect(
         within(card).getByText('Brian’s contribution'),
       ).toBeInTheDocument();
       expect(within(card).getByText('Outcome')).toBeInTheDocument();
+      expect(within(card).getByText(contribution)).toBeInTheDocument();
+      expect(within(card).getByText(outcome)).toBeInTheDocument();
     }
   });
 

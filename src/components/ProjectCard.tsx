@@ -27,11 +27,11 @@ export function ProjectCard({ project }: ProjectCardProps) {
           </div>
           <div>
             <dt>Brian’s contribution</dt>
-            <dd>{project.cardContribution}</dd>
+            <dd>{project.cardSummary.contribution}</dd>
           </div>
           <div>
             <dt>Outcome</dt>
-            <dd>{project.cardOutcome}</dd>
+            <dd>{project.cardSummary.outcome}</dd>
           </div>
         </dl>
         <a
