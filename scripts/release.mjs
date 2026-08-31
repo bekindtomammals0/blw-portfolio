@@ -4,7 +4,7 @@ import path from 'node:path';
 export const productionIdentity = {
   title: 'Brian Christopher Bulawan — AI, Automation & Systems Developer',
   description:
-    'Brian Christopher Bulawan — AI, Automation & Systems Developer.',
+    'Brian Christopher Bulawan builds structured, adaptable systems for inefficient workflows using software, AI, and automation.',
   canonical: 'https://bekindtomammals0.github.io/blw-portfolio/',
   socialImage:
     'https://bekindtomammals0.github.io/blw-portfolio/social-preview.webp',
@@ -48,8 +48,15 @@ async function sourceFiles(directory) {
   return files;
 }
 
+function escapeRegExp(value) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 export function validateMetadata(html) {
   const errors = [];
+  const escapedDescriptionPattern = escapeRegExp(
+    productionIdentity.description,
+  );
   const required = [
     [
       'approved title',
@@ -57,7 +64,24 @@ export function validateMetadata(html) {
         `<title>\\s*${productionIdentity.title.replace('&', '&(?:amp;)?')}\\s*</title>`,
       ),
     ],
-    ['approved description', new RegExp(productionIdentity.description)],
+    [
+      'standard description',
+      new RegExp(
+        `name="description"\\s+content="${escapedDescriptionPattern}"`,
+      ),
+    ],
+    [
+      'Open Graph description',
+      new RegExp(
+        `property="og:description"\\s+content="${escapedDescriptionPattern}"`,
+      ),
+    ],
+    [
+      'Twitter description',
+      new RegExp(
+        `name="twitter:description"\\s+content="${escapedDescriptionPattern}"`,
+      ),
+    ],
     [
       'canonical URL',
       new RegExp(`rel="canonical"\\s+href="${productionIdentity.canonical}"`),
