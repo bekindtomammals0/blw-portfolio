@@ -15,10 +15,10 @@ export function AboutSection() {
           </h2>
           <div className="about-copy">
             <p>
-              I am Brian Christopher Bulawan, based in {contact.location}, with
-              a professional focus on AI, automation, and systems development. I
-              build structured solutions for workflows that are inefficient,
-              ambiguous, or difficult to manage consistently.
+              I am Brian Christopher Bulawan, based in the {contact.location},
+              with a professional focus on AI, automation, and systems
+              development. I build structured solutions for workflows that are
+              inefficient, ambiguous, or difficult to manage consistently.
             </p>
             <p>
               My interests include AI-assisted engineering, automation,

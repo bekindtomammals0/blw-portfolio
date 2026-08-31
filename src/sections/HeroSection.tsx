@@ -14,10 +14,9 @@ export function HeroSection() {
       aria-labelledby="hero-title"
     >
       <div className="max-w-4xl">
-        <p className="eyebrow">Foundation preview</p>
         <h1
           id="hero-title"
-          className="mt-4 text-4xl font-black tracking-[-0.04em] text-balance sm:text-6xl lg:text-7xl"
+          className="text-4xl font-black tracking-[-0.04em] text-balance sm:text-6xl lg:text-7xl"
         >
           Brian Christopher Bulawan
         </h1>

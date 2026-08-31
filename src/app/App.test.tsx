@@ -111,6 +111,24 @@ describe('optional development notes', () => {
 });
 
 describe('portfolio project path', () => {
+  it('presents a finished public release without empty project governance copy', () => {
+    render(<App />);
+
+    expect(screen.queryByText('Foundation preview')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('region', { name: /Selected projects/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Additional work stays evidence-gated/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/No non-featured projects are published yet/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/based in the Philippines, with/i),
+    ).toBeInTheDocument();
+  });
+
   it('leads with the approved projects in the same order across summary and detail', () => {
     render(<App />);
 
