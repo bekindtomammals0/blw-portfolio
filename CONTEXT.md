@@ -425,6 +425,56 @@ Never expose:
 - access tokens or environment values;
 - data copied from operational spreadsheets without sanitization.
 
+### Evidence language
+
+**Verified screenshot**:
+A screenshot confirmed to represent the stated working project behavior and explicitly approved by Brian for public disclosure.
+_Avoid_: approved screenshot, safe screenshot
+
+**Factual attestation**:
+Brian's confirmation that an exact evidence artifact accurately represents the stated working project behavior. It records the attestation without storing private verification sources or notes.
+_Avoid_: verification note, provenance record
+
+**Disclosure approval**:
+Brian's explicit authorization to publish an evidence artifact after reviewing it for protected or misleading content. Automated checks may support this review but cannot grant approval.
+_Avoid_: automatic approval
+
+**Approval record**:
+The attribution, time, and artifact fingerprint that bind disclosure approval to one exact evidence artifact. Any change to the artifact invalidates that approval.
+_Avoid_: permanent approval
+
+**Evidence candidate**:
+An unpublished artifact awaiting preparation, factual verification, disclosure review, or selection. Its presence does not authorize publication.
+_Avoid_: deploy asset, approved evidence
+
+**Publication-ready evidence**:
+An optimized evidence artifact with complete descriptive metadata, explicit disclosure approval, and an intentional place in a project narrative.
+_Avoid_: uploaded image, folder image
+
+**Original screenshot**:
+An unaltered capture of a working project interface whose visible content is approved for public disclosure.
+_Avoid_: raw screenshot
+
+**Redacted screenshot**:
+A capture of a working project interface with protected visible content obscured or removed and disclosed to visitors as redacted.
+_Avoid_: original screenshot
+
+**Reconstructed screenshot**:
+A recreated view based on working project behavior, using a newly assembled interface or scene instead of an altered operational capture.
+_Avoid_: original screenshot, redacted screenshot
+
+**Synthetic screenshot**:
+A capture of the working interface populated entirely with invented, non-operational data and disclosed to visitors as synthetic.
+_Avoid_: original screenshot
+
+**Card evidence**:
+The single evidence artifact selected to represent a project in its summary card.
+_Avoid_: first image, thumbnail upload
+
+**Case-study evidence**:
+An intentionally ordered evidence artifact that supports a specific part of the project's detailed narrative.
+_Avoid_: gallery image
+
 See `docs/DISCLOSURE_GUIDELINES.md`.
 
 ---
