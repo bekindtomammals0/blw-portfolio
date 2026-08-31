@@ -41,6 +41,26 @@ social-preview metadata and artifact. It does not contact the deployed site.
 Production deployment concurrency cancels an older in-progress deployment when
 a newer release or rollback begins.
 
+## Versioning policy
+
+Releases use semantic version labels as a lightweight description of the
+portfolio's maturity and scope:
+
+- `v0.1.0` is the finalized initial public portfolio.
+- `v0.1.1` is a corrective release for copy, links, SEO, responsive behavior,
+  accessibility, or similar fixes.
+- `v0.2.0` adds a case study or makes a meaningful information-architecture
+  improvement.
+- `v1.0.0` is the stable portfolio routinely used for real applications and
+  client outreach.
+- `v2.0.0` is a fundamental repositioning or redesign after v1.
+
+Create a GitHub Release only for a meaningful portfolio milestone. The site
+does not display its version, routine deployments do not require releases, and
+versions are not bumped automatically. Keep release work on the normal feature
+branch to `dev` to `main` path; do not create separate release branches or a
+detailed changelog until either becomes useful.
+
 ## Identify the last known-good commit
 
 Open the repository Actions page, select `Deploy portfolio to GitHub Pages`,
