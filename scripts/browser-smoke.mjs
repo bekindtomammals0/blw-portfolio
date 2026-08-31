@@ -41,6 +41,52 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
     }
     if (!loaded) throw new Error(`${baseUrl} did not return the portfolio`);
 
+    for (const width of [320, 375, 768, 1280]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
+
+      const layout = await page.evaluate(() => {
+        const header = document.querySelector('.site-header');
+        const navigation = header?.querySelector('nav');
+        const links = [...(navigation?.querySelectorAll('a') ?? [])];
+        const headerOffset = Number.parseFloat(
+          getComputedStyle(document.documentElement).getPropertyValue(
+            '--header-offset',
+          ),
+        );
+
+        return {
+          hasOverflow:
+            document.documentElement.scrollWidth >
+            document.documentElement.clientWidth,
+          headerHeight: header?.getBoundingClientRect().height ?? 0,
+          headerOffset,
+          navigationWidth: navigation?.getBoundingClientRect().width ?? 0,
+          narrowestTarget: Math.min(
+            ...links.map((link) => link.getBoundingClientRect().height),
+          ),
+        };
+      });
+
+      if (layout.hasOverflow) {
+        throw new Error(`Page overflows horizontally at ${width}px`);
+      }
+      if (width < 768 && layout.navigationWidth < width - 48) {
+        throw new Error(`Primary navigation does not reflow at ${width}px`);
+      }
+      if (layout.narrowestTarget < 44) {
+        throw new Error(
+          `Primary navigation targets are too small at ${width}px`,
+        );
+      }
+      if (Math.abs(layout.headerOffset - layout.headerHeight) > 1) {
+        throw new Error(`Sticky-header offset is stale at ${width}px`);
+      }
+    }
+
+    await page.setViewportSize({ width: 1280, height: 900 });
+    await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
+
     const primaryNavigation = page.getByRole('navigation', {
       name: 'Primary navigation',
     });
@@ -68,6 +114,27 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
       if (page.url() !== deepLink.href) {
         throw new Error(`${fragment} did not remain addressable`);
       }
+      const [headerBounds, targetBounds] = await Promise.all([
+        page.locator('.site-header').boundingBox(),
+        page.locator(fragment).boundingBox(),
+      ]);
+      if (
+        headerBounds &&
+        targetBounds &&
+        targetBounds.y < headerBounds.y + headerBounds.height - 1
+      ) {
+        throw new Error(`${fragment} is obscured by the sticky header`);
+      }
+    }
+
+    await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
+    await page
+      .getByRole('link', { name: 'Explore BLWFinBot', exact: true })
+      .click();
+    await page.goBack();
+    await page.goForward();
+    if (!page.url().endsWith('#project-blwfinbot')) {
+      throw new Error('Project deep link did not survive Back and Forward');
     }
 
     const featuredCards = page.locator('#work article');
