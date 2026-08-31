@@ -11,6 +11,8 @@ const projectWithoutOptionalPublicArtifacts: PortfolioProject = {
   slug: 'safe-example',
   name: 'Safe Example',
   tagline: 'A test project with no optional public artifacts.',
+  cardContribution: 'Brian directed the implementation.',
+  cardOutcome: 'The workflow became easier to manage.',
   status: 'Working MVP',
   disclosure: 'public-case-study',
   featured: true,

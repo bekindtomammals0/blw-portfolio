@@ -1,4 +1,10 @@
+import { contact } from '../data/contact';
+
 export function HeroSection() {
+  const profileChannels = contact.channels.filter(
+    (channel) => channel.label === 'GitHub' || channel.label === 'LinkedIn',
+  );
+
   return (
     <section
       className="page-shell grid min-h-[72vh] content-center gap-8 py-20 sm:py-28"
@@ -28,6 +34,13 @@ export function HeroSection() {
           Contact
         </a>
       </div>
+      <nav className="hero-profile-links" aria-label="Professional profiles">
+        {profileChannels.map((channel) => (
+          <a key={channel.label} href={channel.href}>
+            {channel.label}
+          </a>
+        ))}
+      </nav>
     </section>
   );
 }

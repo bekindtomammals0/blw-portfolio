@@ -51,6 +51,8 @@ export interface PortfolioProject {
   slug: string;
   name: string;
   tagline: string;
+  cardContribution: string;
+  cardOutcome: string;
   status: ProjectStatus;
   disclosure: DisclosureLevel;
   featured: boolean;

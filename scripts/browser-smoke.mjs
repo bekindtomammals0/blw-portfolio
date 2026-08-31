@@ -14,13 +14,13 @@ const expectedPrimaryLinks = new Map([
 ]);
 
 const expectedFeaturedLinks = new Map([
-  ['Explore UI GreenMetric Coordination Dashboard', '#project-ui-greenmetric'],
+  ['Explore BLWFinBot', '#project-blwfinbot'],
   [
     'Explore Badminton Tournament Operations System',
     '#project-badminton-tournament-operations',
   ],
-  ['Explore BLWFinBot', '#project-blwfinbot'],
   ['Explore B-Loom Class & Exam Scheduling System', '#project-b-loom'],
+  ['Explore UI GreenMetric Coordination Dashboard', '#project-ui-greenmetric'],
 ]);
 
 export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
@@ -70,9 +70,48 @@ export async function validatePortfolio(baseUrl, { retries = 1 } = {}) {
       }
     }
 
+    const featuredCards = page.locator('#work article');
+    const caseStudies = page.locator('#case-studies article');
+    const expectedNames = [...expectedFeaturedLinks.keys()].map((name) =>
+      name.replace('Explore ', ''),
+    );
+    if (
+      JSON.stringify(
+        await featuredCards
+          .getByRole('heading', { level: 3 })
+          .allTextContents(),
+      ) !== JSON.stringify(expectedNames) ||
+      JSON.stringify(
+        await caseStudies.getByRole('heading', { level: 3 }).allTextContents(),
+      ) !== JSON.stringify(expectedNames)
+    ) {
+      throw new Error(
+        'Featured cards and case studies do not share the approved order',
+      );
+    }
+    for (const card of await featuredCards.all()) {
+      for (const label of ['System', 'Brian’s contribution', 'Outcome']) {
+        if ((await card.getByText(label, { exact: true }).count()) !== 1) {
+          throw new Error(`Featured card is missing ${label}`);
+        }
+      }
+    }
+
     await page.goto(baseUrl.href, { waitUntil: 'networkidle' });
+    const hero = page.locator('[aria-labelledby="hero-title"]');
+    for (const name of ['GitHub', 'LinkedIn']) {
+      const expectedHref = approvedContacts.get(name);
+      if (
+        (await hero
+          .getByRole('link', { name, exact: true })
+          .getAttribute('href')) !== expectedHref
+      ) {
+        throw new Error(`Hero ${name} link is incorrect`);
+      }
+    }
+    const contactSection = page.locator('#contact');
     for (const [name, expectedHref] of approvedContacts) {
-      const actualHref = await page
+      const actualHref = await contactSection
         .getByRole('link', { name, exact: true })
         .getAttribute('href');
       if (actualHref !== expectedHref) {

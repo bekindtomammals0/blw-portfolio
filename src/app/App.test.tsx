@@ -111,6 +111,58 @@ describe('optional development notes', () => {
 });
 
 describe('portfolio project path', () => {
+  it('leads with the approved projects in the same order across summary and detail', () => {
+    render(<App />);
+
+    const expectedOrder = [
+      'BLWFinBot',
+      'Badminton Tournament Operations System',
+      'B-Loom Class & Exam Scheduling System',
+      'UI GreenMetric Coordination Dashboard',
+    ];
+    const featuredWork = screen.getByRole('region', {
+      name: 'Systems built around real operational problems.',
+    });
+    const caseStudies = screen.getByRole('region', {
+      name: /Problem.*System.*Engineering.*Outcome.*Evolution/,
+    });
+
+    expect(
+      within(featuredWork)
+        .getAllByRole('article')
+        .map((card) => card.getAttribute('aria-labelledby')),
+    ).toEqual(
+      expectedOrder.map(
+        (name) =>
+          `project-card-${name === 'BLWFinBot' ? 'blwfinbot' : name === 'Badminton Tournament Operations System' ? 'badminton-tournament-operations' : name === 'B-Loom Class & Exam Scheduling System' ? 'b-loom' : 'ui-greenmetric'}`,
+      ),
+    );
+    expect(
+      within(caseStudies)
+        .getAllByRole('article')
+        .map(
+          (study) =>
+            within(study).getByRole('heading', { level: 3 }).textContent,
+        ),
+    ).toEqual(expectedOrder);
+  });
+
+  it('puts system, contribution, and outcome evidence on every featured card', () => {
+    render(<App />);
+
+    const featuredWork = screen.getByRole('region', {
+      name: 'Systems built around real operational problems.',
+    });
+
+    for (const card of within(featuredWork).getAllByRole('article')) {
+      expect(within(card).getByText('System')).toBeInTheDocument();
+      expect(
+        within(card).getByText('Brian’s contribution'),
+      ).toBeInTheDocument();
+      expect(within(card).getByText('Outcome')).toBeInTheDocument();
+    }
+  });
+
   it('renders a featured project card linked to its five-part case study', () => {
     render(<App />);
 
@@ -304,6 +356,31 @@ describe('portfolio project path', () => {
 });
 
 describe('non-project visitor journey', () => {
+  it('keeps compact GitHub and LinkedIn access beside the hero actions', () => {
+    render(<App />);
+
+    const hero = screen.getByRole('region', {
+      name: 'Brian Christopher Bulawan',
+    });
+    expect(
+      within(hero).getByRole('link', { name: 'View selected work' }),
+    ).toHaveAttribute('href', '#work');
+    expect(within(hero).getByRole('link', { name: 'Contact' })).toHaveAttribute(
+      'href',
+      '#contact',
+    );
+
+    for (const [name, href] of [
+      ['GitHub', 'https://github.com/bekindtomammals0'],
+      ['LinkedIn', 'https://www.linkedin.com/in/bbulawan/'],
+    ]) {
+      const link = within(hero).getByRole('link', { name });
+      expect(link).toHaveAttribute('href', href);
+      link.focus();
+      expect(link).toHaveFocus();
+    }
+  });
+
   it('explains the engineering approach and offers only verified contact links', () => {
     render(<App />);
 

@@ -171,6 +171,24 @@ img {
   background: #e7e5e4;
 }
 
+.hero-profile-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin-top: -1rem;
+}
+
+.hero-profile-links a {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  color: #475569;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration-color: #a16207;
+  text-underline-offset: 0.25rem;
+}
+
 .text-link {
   color: #92400e;
   font-weight: 800;
@@ -311,6 +329,33 @@ img {
   color: #475569;
   font-size: 1.05rem;
   line-height: 1.75;
+}
+
+.project-card-summary {
+  display: grid;
+  gap: 0.9rem;
+  margin: 1.5rem 0 0;
+}
+
+.project-card-summary div {
+  border-left: 2px solid #cbd5e1;
+  padding-left: 0.9rem;
+}
+
+.project-card-summary dt {
+  color: #92400e;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-card-summary dd {
+  margin: 0.25rem 0 0;
+  color: #475569;
+  font-size: 0.92rem;
+  line-height: 1.55;
 }
 
 .metadata-row {

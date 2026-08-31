@@ -1,12 +1,13 @@
 import { ProjectCard } from '../components/ProjectCard';
 import type { PortfolioProject } from '../types/portfolio';
+import { orderedFeaturedProjects } from '../data/projects';
 
 interface FeaturedWorkSectionProps {
   projects: PortfolioProject[];
 }
 
 export function FeaturedWorkSection({ projects }: FeaturedWorkSectionProps) {
-  const featuredProjects = projects.filter((project) => project.featured);
+  const featuredProjects = orderedFeaturedProjects(projects);
 
   if (featuredProjects.length === 0) {
     return null;
