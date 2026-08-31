@@ -111,6 +111,108 @@ describe('optional development notes', () => {
 });
 
 describe('portfolio project path', () => {
+  it('presents a finished public release without empty project governance copy', () => {
+    render(<App />);
+
+    expect(screen.queryByText('Foundation preview')).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('region', { name: /Selected projects/i }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/Additional work stays evidence-gated/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(/No non-featured projects are published yet/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/based in the Philippines, with/i),
+    ).toBeInTheDocument();
+  });
+
+  it('leads with the approved projects in the same order across summary and detail', () => {
+    render(<App />);
+
+    const expectedProjects = [
+      { name: 'BLWFinBot', slug: 'blwfinbot' },
+      {
+        name: 'Badminton Tournament Operations System',
+        slug: 'badminton-tournament-operations',
+      },
+      { name: 'B-Loom Class & Exam Scheduling System', slug: 'b-loom' },
+      {
+        name: 'UI GreenMetric Coordination Dashboard',
+        slug: 'ui-greenmetric',
+      },
+    ];
+    const featuredWork = screen.getByRole('region', {
+      name: 'Systems built around real operational problems.',
+    });
+    const caseStudies = screen.getByRole('region', {
+      name: /Problem.*System.*Engineering.*Outcome.*Evolution/,
+    });
+
+    expect(
+      within(featuredWork)
+        .getAllByRole('article')
+        .map((card) => card.getAttribute('aria-labelledby')),
+    ).toEqual(expectedProjects.map(({ slug }) => `project-card-${slug}`));
+    expect(
+      within(caseStudies)
+        .getAllByRole('article')
+        .map(
+          (study) =>
+            within(study).getByRole('heading', { level: 3 }).textContent,
+        ),
+    ).toEqual(expectedProjects.map(({ name }) => name));
+  });
+
+  it('puts system, contribution, and outcome evidence on every featured card', () => {
+    render(<App />);
+
+    const featuredWork = screen.getByRole('region', {
+      name: 'Systems built around real operational problems.',
+    });
+
+    const recruiterCopy = new Map([
+      [
+        'BLWFinBot',
+        [/Brian directed the requirements/, /Unified transaction capture/],
+      ],
+      [
+        'Badminton Tournament Operations System',
+        [
+          /Brian designed the tournament lifecycle/,
+          /more manageable across registration/,
+        ],
+      ],
+      [
+        'B-Loom Class & Exam Scheduling System',
+        [
+          /Brian directed the domain and constraint model/,
+          /Brought import, constraint checking/,
+        ],
+      ],
+      [
+        'UI GreenMetric Coordination Dashboard',
+        [
+          /Brian designed the shared requirement/,
+          /Made requirements, ownership/,
+        ],
+      ],
+    ]);
+
+    for (const [name, [contribution, outcome]] of recruiterCopy) {
+      const card = within(featuredWork).getByRole('article', { name });
+      expect(within(card).getByText('System')).toBeInTheDocument();
+      expect(
+        within(card).getByText('Brian’s contribution'),
+      ).toBeInTheDocument();
+      expect(within(card).getByText('Outcome')).toBeInTheDocument();
+      expect(within(card).getByText(contribution)).toBeInTheDocument();
+      expect(within(card).getByText(outcome)).toBeInTheDocument();
+    }
+  });
+
   it('renders a featured project card linked to its five-part case study', () => {
     render(<App />);
 
@@ -144,14 +246,15 @@ describe('portfolio project path', () => {
       within(caseStudy).getByText('Sanitized case study'),
     ).toBeInTheDocument();
     expect(
-      within(caseStudy).getByText(/Institutional records.*are excluded/),
+      within(caseStudy).getByText(
+        'Synthetic reconstruction; no institutional records, internal links, credentials, or operational data shown.',
+      ),
     ).toBeInTheDocument();
     expect(
       within(caseStudy).getByRole('figure', {
         name: /requirements moving through evidence reference/i,
       }),
     ).toBeInTheDocument();
-    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
     for (const sectionName of [
       'Problem',
       'System',
@@ -187,7 +290,9 @@ describe('portfolio project path', () => {
     expect(caseStudy).toHaveTextContent('Operational');
     expect(caseStudy).toHaveTextContent('Sanitized case study');
     expect(caseStudy).toHaveTextContent(/multiple events/i);
-    expect(caseStudy).toHaveTextContent(/synthetic participant records/i);
+    expect(caseStudy).toHaveTextContent(
+      /Synthetic reconstruction; no participant data, production spreadsheets, private links, or event records shown/i,
+    );
     expect(caseStudy).toHaveTextContent(/registration/i);
     expect(caseStudy).toHaveTextContent(/scheduling/i);
     expect(caseStudy).toHaveTextContent(/match progression/i);
@@ -200,7 +305,6 @@ describe('portfolio project path', () => {
         name: /registration records flow into scheduling/i,
       }),
     ).toBeInTheDocument();
-    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
   });
 
   it('publishes verified BLWFinBot v1 without presenting planned v2 work as current', () => {
@@ -230,7 +334,9 @@ describe('portfolio project path', () => {
     expect(caseStudy).toHaveTextContent(/planned v2/i);
     expect(caseStudy).toHaveTextContent(/human-directed/i);
     expect(caseStudy).toHaveTextContent(/AI-assisted development/i);
-    expect(caseStudy).toHaveTextContent(/synthetic financial data/i);
+    expect(caseStudy).toHaveTextContent(
+      /Synthetic reconstruction; no personal financial data, messages, receipts, contract rates, credentials, deployment details, or private repository links shown/i,
+    );
     expect(
       within(caseStudy).getByRole('figure', {
         name: /Telegram message flows through deterministic parsing/i,
@@ -241,7 +347,6 @@ describe('portfolio project path', () => {
         name: /synthetic Ledger sample/i,
       }),
     ).toHaveTextContent('Project payment');
-    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
   });
 
   it('publishes B-Loom as a paused sanitized scheduling system with future optimization separated', () => {
@@ -273,7 +378,9 @@ describe('portfolio project path', () => {
     expect(caseStudy).toHaveTextContent(/CP-SAT.*future/i);
     expect(caseStudy).toHaveTextContent(/Brian directed/i);
     expect(caseStudy).toHaveTextContent(/AI-assisted development/i);
-    expect(caseStudy).toHaveTextContent(/entirely synthetic/i);
+    expect(caseStudy).toHaveTextContent(
+      /Synthetic reconstruction; no institutional records, actual schedules, credentials, internal network details, operational screenshots, or private repository links shown/i,
+    );
     expect(
       within(caseStudy).getByRole('figure', {
         name: /synthetic scheduling data flows from import/i,
@@ -299,11 +406,53 @@ describe('portfolio project path', () => {
         name: /before and after review sample/i,
       }),
     ).toHaveTextContent('After human review');
-    expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
+  });
+
+  it('keeps unapproved project links out of every sanitized case study', () => {
+    render(<App />);
+
+    for (const name of [
+      'UI GreenMetric Coordination Dashboard',
+      'Badminton Tournament Operations System',
+      'BLWFinBot',
+      'B-Loom Class & Exam Scheduling System',
+    ]) {
+      const caseStudy = screen.getByRole('article', {
+        name: `${name} case study`,
+      });
+
+      expect(caseStudy).toHaveTextContent('Sanitized case study');
+      expect(within(caseStudy).queryByRole('link')).not.toBeInTheDocument();
+    }
   });
 });
 
 describe('non-project visitor journey', () => {
+  it('keeps compact GitHub and LinkedIn access beside the hero actions', () => {
+    render(<App />);
+
+    const hero = screen.getByRole('region', {
+      name: 'Brian Christopher Bulawan',
+    });
+    expect(
+      within(hero).getByRole('link', { name: 'View selected work' }),
+    ).toHaveAttribute('href', '#work');
+    expect(within(hero).getByRole('link', { name: 'Contact' })).toHaveAttribute(
+      'href',
+      '#contact',
+    );
+
+    for (const [name, href] of [
+      ['GitHub', 'https://github.com/bekindtomammals0'],
+      ['LinkedIn', 'https://www.linkedin.com/in/bbulawan/'],
+    ]) {
+      const link = within(hero).getByRole('link', { name });
+      expect(link).toHaveAttribute('href', href);
+      link.focus();
+      expect(link).toHaveFocus();
+    }
+  });
+
   it('explains the engineering approach and offers only verified contact links', () => {
     render(<App />);
 

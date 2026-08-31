@@ -1,12 +1,13 @@
 import { ProjectCaseStudy } from '../components/ProjectCaseStudy';
 import type { PortfolioProject } from '../types/portfolio';
+import { orderedFeaturedProjects } from '../data/projects';
 
 interface CaseStudiesSectionProps {
   projects: PortfolioProject[];
 }
 
 export function CaseStudiesSection({ projects }: CaseStudiesSectionProps) {
-  const featuredProjects = projects.filter((project) => project.featured);
+  const featuredProjects = orderedFeaturedProjects(projects);
 
   if (featuredProjects.length === 0) {
     return null;

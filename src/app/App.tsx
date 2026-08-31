@@ -7,7 +7,6 @@ import { ApproachSection } from '../sections/ApproachSection';
 import { CaseStudiesSection } from '../sections/CaseStudiesSection';
 import { ContactSection } from '../sections/ContactSection';
 import { FeaturedWorkSection } from '../sections/FeaturedWorkSection';
-import { FoundationSection } from '../sections/FoundationSection';
 import { HeroSection } from '../sections/HeroSection';
 import { NotesSection } from '../sections/NotesSection';
 import type { DevelopmentNote } from '../types/portfolio';
@@ -28,12 +27,6 @@ export function App({ developmentNotes = notes }: AppProps) {
       <main id="main-content" tabIndex={-1}>
         <HeroSection />
         <FeaturedWorkSection projects={projects} />
-        <FoundationSection
-          id="projects"
-          eyebrow="Selected projects"
-          title="Additional work stays evidence-gated."
-          description="No non-featured projects are published yet. Each project must reach a working state and pass factual, contribution, evidence, and disclosure review before it enters this collection."
-        />
         <CaseStudiesSection projects={projects} />
         <NotesSection notes={developmentNotes} projects={projects} />
         <ApproachSection />

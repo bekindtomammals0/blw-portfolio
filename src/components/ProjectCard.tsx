@@ -20,7 +20,20 @@ export function ProjectCard({ project }: ProjectCardProps) {
           ))}
         </div>
         <h3 id={headingId}>{project.name}</h3>
-        <p>{project.tagline}</p>
+        <dl className="project-card-summary">
+          <div>
+            <dt>System</dt>
+            <dd>{project.tagline}</dd>
+          </div>
+          <div>
+            <dt>Brian’s contribution</dt>
+            <dd>{project.cardSummary.contribution}</dd>
+          </div>
+          <div>
+            <dt>Outcome</dt>
+            <dd>{project.cardSummary.outcome}</dd>
+          </div>
+        </dl>
         <a
           className="text-link project-link"
           href={`#project-${project.slug}`}

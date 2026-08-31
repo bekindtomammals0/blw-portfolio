@@ -6,6 +6,12 @@ export const projects = [
     name: 'UI GreenMetric Coordination Dashboard',
     tagline:
       'A shared coordination system for organizing requirements, evidence references, ownership, missing items, and submission status.',
+    cardSummary: {
+      contribution:
+        'Brian designed the shared requirement, evidence, ownership, missing-item, and status structure used to coordinate the workflow.',
+      outcome:
+        'Made requirements, ownership, missing items, and submission status visible in one shared workflow.',
+    },
     status: 'Operational',
     disclosure: 'sanitized-case-study',
     featured: true,
@@ -16,7 +22,7 @@ export const projects = [
     system:
       'The dashboard organizes each requirement with its evidence reference, responsible owner, missing-item state, and submission status. These shared fields turn a broad coordination process into a visible workflow that can be reviewed and updated.',
     engineering:
-      'The core engineering work was information and workflow design: defining a consistent record for requirements, connecting evidence to responsibility and status, and arranging the shared view around coordination decisions. The public evidence below recreates that flow without copying operational records.',
+      'The core engineering work was information and workflow design: defining a consistent record for requirements, connecting evidence to responsibility and status, and arranging the shared view around coordination decisions.',
     outcome:
       'The working process became more structured and observable: the coordinating team could use a shared view of what was required, what evidence was referenced, who owned the next action, and which items were still missing.',
     evolution:
@@ -26,7 +32,7 @@ export const projects = [
         type: 'workflow',
         alt: 'Abstract workflow showing requirements moving through evidence reference, ownership review, and submission status.',
         caption:
-          'Synthetic workflow — a disclosure-safe reconstruction of the coordination model, not operational data.',
+          'Synthetic reconstruction of requirement, evidence, ownership, and status handoffs.',
         steps: ['Requirement', 'Evidence reference', 'Owner review', 'Status'],
       },
     ],
@@ -34,13 +40,19 @@ export const projects = [
     links: [],
     developmentNotes: [],
     confidentialityNote:
-      'Sanitized case study. Institutional records, internal links, credentials, and operational data are excluded.',
+      'Synthetic reconstruction; no institutional records, internal links, credentials, or operational data shown.',
   },
   {
     slug: 'badminton-tournament-operations',
     name: 'Badminton Tournament Operations System',
     tagline:
       'An evolving family of event tools that structures registration, scheduling, match progression, and event-day coordination.',
+    cardSummary: {
+      contribution:
+        'Brian designed the tournament lifecycle structure and implemented operational views that adapted as event needs changed.',
+      outcome:
+        'Made tournament information more manageable across registration, scheduling, match progression, and event-day decisions.',
+    },
     status: 'Operational',
     disclosure: 'sanitized-case-study',
     featured: true,
@@ -51,7 +63,7 @@ export const projects = [
     system:
       'The system family connects registration records to scheduling inputs, match assignments, progression updates, and the operational views used during an event. Each tool supports a stage of the same tournament lifecycle, while manual organizer control remains available for event-specific decisions and exceptions.',
     engineering:
-      'The engineering centered on shared information structures and dependable handoffs between stages. Spreadsheet-based event artifacts organized participant records, schedule assignments, match state, and event-day information so organizers could move from intake to live operations through one coherent model. The public diagrams use synthetic participant records and abstract states rather than copied event data.',
+      'The engineering centered on shared information structures and dependable handoffs between stages. Spreadsheet-based event artifacts organized participant records, schedule assignments, match state, and event-day information so organizers could move from intake to live operations through one coherent model.',
     outcome:
       'The organizing team had a more structured way to coordinate tournament information across registration, scheduling, live match progression, and event-day decisions. Outcomes remain qualitative because no reviewed source supports a public claim about participant scale, time saved, or performance improvement.',
     evolution:
@@ -61,7 +73,7 @@ export const projects = [
         type: 'workflow',
         alt: 'Abstract workflow showing registration records flow into scheduling, match progression, and event-day coordination.',
         caption:
-          'Synthetic tournament lifecycle — reconstructed from the system model with no participant or production data.',
+          'Synthetic reconstruction of the tournament lifecycle and its stage-to-stage handoffs.',
         steps: [
           'Registration',
           'Scheduling',
@@ -73,7 +85,7 @@ export const projects = [
         type: 'workflow',
         alt: 'Abstract event-day information flow from scheduled match through result update to the next operational action.',
         caption:
-          'Synthetic event-day flow — abstract states illustrate how one match update informs the next action.',
+          'Synthetic reconstruction of how a match update informs the next event-day action.',
         steps: [
           'Scheduled match',
           'Court assignment',
@@ -88,13 +100,19 @@ export const projects = [
     contribution:
       'Brian structured the tournament lifecycle across the related event tools and adapted their operational views as event needs changed.',
     confidentialityNote:
-      'Sanitized case study. Synthetic participant records replace names and contact details; production spreadsheets, links, and event records are excluded.',
+      'Synthetic reconstruction; no participant data, production spreadsheets, private links, or event records shown.',
   },
   {
     slug: 'blwfinbot',
     name: 'BLWFinBot',
     tagline:
       'A conversational personal-finance system for recording transactions and checking whether income can support a goal.',
+    cardSummary: {
+      contribution:
+        'Brian directed the requirements, architecture, implementation decisions, validation, debugging, release baseline, and deployment constraints.',
+      outcome:
+        'Unified transaction capture, correction, categorization, and goal checks in one conversational workflow.',
+    },
     status: 'Operational',
     disclosure: 'sanitized-case-study',
     featured: true,
@@ -123,7 +141,7 @@ export const projects = [
         type: 'workflow',
         alt: 'Synthetic Telegram message flows through deterministic parsing, ordered categorization, and the Ledger.',
         caption:
-          'Synthetic capture flow — reconstructed behavior with no real messages, receipts, or financial values.',
+          'Synthetic reconstruction of the verified v1 capture and categorization flow.',
         steps: [
           'Text or voice',
           'Deterministic parser',
@@ -135,7 +153,7 @@ export const projects = [
         type: 'workflow',
         alt: 'Synthetic goal check flows from contract income projection through persisted feasibility and drift alerts.',
         caption:
-          'Synthetic goal flow — an abstract example of verified v1 behavior, not personal financial advice or data.',
+          'Synthetic reconstruction of verified v1 income projection, Goal feasibility, and drift alerts.',
         steps: [
           'Contract income',
           'Income projection',
@@ -147,7 +165,7 @@ export const projects = [
         type: 'sample-output',
         alt: 'Synthetic Ledger sample with one Income and one Expense record.',
         caption:
-          'Synthetic Ledger rows — illustrative values and descriptions, not personal financial records.',
+          'Synthetic Ledger rows illustrating the Income and Expense record structure.',
         sampleRows: [
           {
             label: 'Income · Project payment',
@@ -166,13 +184,19 @@ export const projects = [
     contribution:
       'Brian directed the problem definition, requirements, architecture and implementation decisions, validation, debugging, release baseline, and deployment constraints. AI-assisted development accelerated implementation, debugging, documentation, and iteration; requirements, system behavior, constraints, validation, and final engineering decisions remained human-directed.',
     confidentialityNote:
-      'Sanitized case study. Synthetic financial data replaces personal values, messages, Ledger rows, goals, and receipts; credentials, contract rates, internal deployment details, and the private repository are excluded.',
+      'Synthetic reconstruction; no personal financial data, messages, receipts, contract rates, credentials, deployment details, or private repository links shown.',
   },
   {
     slug: 'b-loom',
     name: 'B-Loom Class & Exam Scheduling System',
     tagline:
       'A constraint-aware application for importing academic data, generating exam schedules, reviewing conflicts, and exporting schedule artifacts.',
+    cardSummary: {
+      contribution:
+        'Brian directed the domain and constraint model, architecture, implementation decisions, validation, debugging, and private deployment constraints.',
+      outcome:
+        'Brought import, constraint checking, heuristic generation, human review, editing, and export into one scheduling workflow.',
+    },
     status: 'Paused',
     disclosure: 'sanitized-case-study',
     featured: true,
@@ -203,7 +227,7 @@ export const projects = [
         type: 'workflow',
         alt: 'Synthetic scheduling data flows from import through validation, heuristic generation, human review, and export.',
         caption:
-          'Synthetic system overview — entirely synthetic academic entities illustrate the verified workflow without institutional records.',
+          'Synthetic reconstruction of the verified import-to-export scheduling workflow.',
         steps: [
           'Data import',
           'Constraint validation',
@@ -216,7 +240,7 @@ export const projects = [
         type: 'workflow',
         alt: 'Constraint flow distinguishes hard placement blockers from scoring preferences and review advisories.',
         caption:
-          'Synthetic constraint flow — rule classes are separated so preferences and advisories are not presented as hard constraints.',
+          'Synthetic constraint flow distinguishing hard blockers, scoring preferences, and review advisories.',
         steps: [
           'Candidate assignment',
           'Hard blockers',
@@ -229,7 +253,7 @@ export const projects = [
         type: 'workflow',
         alt: 'Synthetic architecture diagram connects the Vue and Inertia interface to Laravel domain services, constraint registries, and PostgreSQL.',
         caption:
-          'Architecture overview — verified application layers shown without private deployment or network details.',
+          'Synthetic architecture overview of the verified interface, application, domain, and persistence layers.',
         steps: [
           'Vue 3 interface',
           'Inertia',
@@ -242,7 +266,7 @@ export const projects = [
         type: 'sample-output',
         alt: 'Synthetic schedule review sample with one assigned exam, one conflict, and one TBA room.',
         caption:
-          'Reconstructed schedule grid — fictional courses, periods, and rooms; no real scheduling or institutional data.',
+          'Reconstructed schedule grid showing assigned, conflicted, and unresolved states.',
         sampleRows: [
           { label: 'SYN-201 · Period A', value: 'Room North-12' },
           { label: 'SYN-305 · Period A', value: 'Block overlap · Review' },
@@ -253,7 +277,7 @@ export const projects = [
         type: 'sample-output',
         alt: 'Synthetic before and after review sample showing an unresolved assignment becoming a reviewed schedule.',
         caption:
-          'Before and after review — a fictional unresolved input is updated through human review, not an optimizer guarantee.',
+          'Reconstructed before-and-after review — a fictional unresolved input is updated through human review, not an optimizer guarantee.',
         sampleRows: [
           { label: 'Before · SYN-410', value: 'Period B · Room TBA' },
           {
@@ -269,6 +293,31 @@ export const projects = [
     contribution:
       'Brian directed the problem definition, requirements, domain and constraint modeling, architecture and implementation decisions, validation, debugging, and private deployment constraints. AI-assisted development accelerated implementation, debugging, documentation, and iteration; requirements, system behavior, constraints, validation, and final engineering decisions remained Brian-directed.',
     confidentialityNote:
-      'Sanitized case study. Evidence uses an entirely synthetic university, departments, courses, faculty, rooms, capacities, periods, enrollments, conflicts, and assignments. Institutional records, actual schedules, credentials, internal network details, screenshots, and the private repository are excluded.',
+      'Synthetic reconstruction; no institutional records, actual schedules, credentials, internal network details, operational screenshots, or private repository links shown.',
   },
 ] satisfies PortfolioProject[];
+
+const featuredProjectOrder = [
+  'blwfinbot',
+  'badminton-tournament-operations',
+  'b-loom',
+  'ui-greenmetric',
+] as const;
+
+export function orderedFeaturedProjects(allProjects: PortfolioProject[]) {
+  return allProjects
+    .filter((project) => project.featured)
+    .slice()
+    .sort((left, right) => {
+      const leftRank = featuredProjectOrder.indexOf(
+        left.slug as (typeof featuredProjectOrder)[number],
+      );
+      const rightRank = featuredProjectOrder.indexOf(
+        right.slug as (typeof featuredProjectOrder)[number],
+      );
+      return (
+        (leftRank === -1 ? Number.MAX_SAFE_INTEGER : leftRank) -
+        (rightRank === -1 ? Number.MAX_SAFE_INTEGER : rightRank)
+      );
+    });
+}

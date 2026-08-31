@@ -2,6 +2,8 @@
 
 Personal portfolio for **Brian Christopher Bulawan — AI, Automation & Systems Developer**.
 
+**[View live portfolio](https://bekindtomammals0.github.io/blw-portfolio/)**
+
 The portfolio presents practical systems built to make workflows more structured, adaptable, and capable of producing more predictable outcomes. It is intentionally not a repository gallery. Projects are presented as engineering case studies centered on the problem, the system designed, the engineering decisions, the outcome, and the system's evolution.
 
 ## Portfolio thesis
@@ -103,10 +105,17 @@ valid signature.
 
 ## Deployment
 
-Pushes to `main` run the clean-install quality suite and deploy the static
-`dist/` artifact through GitHub Pages. The approved v0.1 canonical URL is
+`dev` is the default integration branch and never deploys. Reviewed promotion
+pull requests from `dev` to protected `main` run clean-install CI and validate
+the exact built artifact in Chromium before a successful `main` update deploys
+through GitHub Pages. The deployment then repeats the browser journey against
+the live URL. The approved v0.1 canonical URL is
 <https://bekindtomammals0.github.io/blw-portfolio/>. No custom domain or backend
 is configured.
+
+See [`docs/RELEASE_PROCESS.md`](docs/RELEASE_PROCESS.md) for promotion, required
+checks, production verification, identifying the last known-good commit, and
+the one-command rollback procedure.
 
 ## Content hierarchy
 
@@ -126,6 +135,7 @@ The site should remain useful even when development notes stop for months.
 - [`docs/DESIGN_SYSTEM.md`](docs/DESIGN_SYSTEM.md) — visual and interaction principles.
 - [`docs/DISCLOSURE_GUIDELINES.md`](docs/DISCLOSURE_GUIDELINES.md) — public/private project rules.
 - [`docs/DEVELOPMENT_ROADMAP.md`](docs/DEVELOPMENT_ROADMAP.md) — milestones and sequencing.
+- [`docs/RELEASE_PROCESS.md`](docs/RELEASE_PROCESS.md) — guarded promotion, deployment, and rollback operations.
 - [`docs/CASE_STUDY_TEMPLATE.md`](docs/CASE_STUDY_TEMPLATE.md) — reusable project-writing template.
 - [GitHub Issues](https://github.com/bekindtomammals0/blw-portfolio/issues) — the sole implementation backlog and source of issue status and dependencies.
 - [`CODEX_BOOTSTRAP_PROMPT.md`](CODEX_BOOTSTRAP_PROMPT.md) — foundation requirements used by the initialization issue.
