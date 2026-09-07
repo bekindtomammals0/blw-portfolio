@@ -26,7 +26,7 @@ export function ContactSection() {
             should make possible.
           </p>
         </div>
-        <div>
+        <address>
           <p className="contact-location">{contact.location}</p>
           <ul className="contact-links">
             {availableChannels.map((channel) => (
@@ -35,7 +35,7 @@ export function ContactSection() {
               </li>
             ))}
           </ul>
-        </div>
+        </address>
       </div>
     </section>
   );
